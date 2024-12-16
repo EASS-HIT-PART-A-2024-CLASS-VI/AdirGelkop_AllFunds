@@ -1,0 +1,1 @@
+# AdirGelkop_AllFunds
