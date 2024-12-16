@@ -1,4 +1,5 @@
 import requests
+import datetime
 from bs4 import BeautifulSoup
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -33,18 +34,24 @@ def scrape_funds():
     response = requests.get(url) # Sends an HTTP request to the website
     soup = BeautifulSoup(response.content, "html.parser") # Parses the returned HTML
 
+    # Taking care of time
+    today = datetime.date.today()
+    two_months_ago = today - datetime.timedelta(days=60)
+    month_two_months_ago = two_months_ago.month
+
     # Mock scraping logic: Replace with the correct HTML structure
     funds = []
     rows = soup.find_all("tr")  # Adjust this selector based on the table structure
     for i, row in enumerate(rows[1:], start=1):  # Skip the table header
         cols = row.find_all("td")
-        if len(cols) >= 4:
+        if len(cols) >= 5:
             funds.append({
                 "id": i,
                 "name": cols[0].text.strip(),
-                "type": cols[1].text.strip(),
-                "returns": cols[2].text.strip(),
-                "management_fee": cols[3].text.strip()
+                str(month_two_months_ago): cols[1].text.strip(),
+                "last_year": cols[2].text.strip(),
+                "last_3_years": cols[3].text.strip(),
+                "last_5_years": cols[4].text.strip()
             })
     return funds
 
