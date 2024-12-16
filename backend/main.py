@@ -68,6 +68,15 @@ funds_db = scrape_funds()
 def get_funds():
     return funds_db
 
+@app.get("/funds/{index}", response_model=Fund)
+def get_fund_by_index(index: int):
+    """
+    Get a specific fund by its index (0-based).
+    """
+    if 0 <= index < len(funds_db):
+        return funds_db[index]
+    return {"error": "Fund not found"}
+
 # SUMMARY
 # Scrapes real-time data from a website.
 # Exposes a clean and structured API (/funds/) to serve this data.
