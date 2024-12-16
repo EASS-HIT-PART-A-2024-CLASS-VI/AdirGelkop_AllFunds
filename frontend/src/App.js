@@ -5,7 +5,7 @@ function App() {
   const [funds, setFunds] = useState([]);
 
   useEffect(() => {
-    axios.get("http://backend:8000/funds/")  // <-- Use "backend" here
+    axios.get("http://localhost:8000/funds/")  // <-- Use "backend" here
       .then((res) => setFunds(res.data))
       .catch((err) => console.error("Error fetching data:", err));
   }, []);
