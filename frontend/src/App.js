@@ -18,9 +18,10 @@ function App() {
           <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Type</th>
-            <th>Returns</th>
-            <th>Management Fee</th>
+            <th>Month Performance</th>
+            <th>Last Year</th>
+            <th>Last 3 Years</th>
+            <th>Last 5 Years</th>
           </tr>
         </thead>
         <tbody>
@@ -28,9 +29,10 @@ function App() {
             <tr key={fund.id}>
               <td>{fund.id}</td>
               <td>{fund.name}</td>
-              <td>{fund.type}</td>
-              <td>{fund.returns}%</td>
-              <td>{fund.management_fee}%</td>
+              <td>{fund.month_performance}</td>
+              <td>{fund.last_year}%</td>
+              <td>{fund.last_3_years}%</td>
+              <td>{fund.last_5_years}%</td>
             </tr>
           ))}
         </tbody>

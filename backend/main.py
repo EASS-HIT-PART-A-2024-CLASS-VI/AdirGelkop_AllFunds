@@ -19,14 +19,21 @@ app.add_middleware(
     allow_headers=["*"], #Allows all request headers
 )
 
+# Function to get the month name two months ago
+def get_month_name_two_months_ago():
+    today = datetime.date.today()
+    two_months_ago = today - datetime.timedelta(days=60)
+    return two_months_ago.strftime("%B")  # Returns the full month name, e.g., "October"
+
 # Data model
 # Defines the structure of the data returned by the API
 class Fund(BaseModel):
     id: int
     name: str
-    type: str
-    returns: str
-    management_fee: str
+    month_performance: str
+    last_year: str
+    last_3_years: str
+    last_5_years: str
 
 # Scraping Function
 def scrape_funds():
@@ -34,10 +41,8 @@ def scrape_funds():
     response = requests.get(url) # Sends an HTTP request to the website
     soup = BeautifulSoup(response.content, "html.parser") # Parses the returned HTML
 
-    # Taking care of time
-    today = datetime.date.today()
-    two_months_ago = today - datetime.timedelta(days=60)
-    month_two_months_ago = two_months_ago.month
+    # Get the month name dynamically
+    month_name = get_month_name_two_months_ago()    
 
     # Mock scraping logic: Replace with the correct HTML structure
     funds = []
@@ -48,7 +53,7 @@ def scrape_funds():
             funds.append({
                 "id": i,
                 "name": cols[0].text.strip(),
-                str(month_two_months_ago): cols[1].text.strip(),
+                "month_performance": f"{month_name}: {cols[1].text.strip()}",
                 "last_year": cols[2].text.strip(),
                 "last_3_years": cols[3].text.strip(),
                 "last_5_years": cols[4].text.strip()
