@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from bs4 import BeautifulSoup
 import requests
 
@@ -30,6 +31,16 @@ def scrape_funds():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# Allow requests from all origins during development
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins (use specific origins in production)
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
+
 @app.get("/funds/")
 def get_funds():
-    return {"funds": scrape_funds()}
+ # Your scraping logic here
+    return {"funds": [{"name": "Fund Example", "type": "Type A", "returns": "5%", "management_fee": "1%"}]}
