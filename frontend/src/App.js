@@ -6,7 +6,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    axios.get("http://backend:80/funds/")
+    axios.get("http://localhost:8000/funds/")
       .then((response) => setFunds(response.data.funds))
       .catch((error) => console.error("Error:", error));
   }, []);
