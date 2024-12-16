@@ -7,14 +7,13 @@ function App() {
 
   useEffect(() => {
     axios.get("http://localhost:8000/funds/")
-      .then((response) => setFunds(response.data.funds))
+      .then((response) => {
+        console.log("Fetched data:", response.data);  // Debug log
+        setFunds(response.data.funds);
+      })
       .catch((error) => console.error("Error:", error));
   }, []);
-
-  const filteredFunds = funds.filter((fund) =>
-    fund.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  
   return (
     <div style={{ textAlign: "center" }}>
       <h1>קרנות השתלמות - Study Funds</h1>
