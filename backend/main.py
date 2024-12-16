@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List
+from typing import List, Dict
 
 app = FastAPI()
 
@@ -44,6 +44,7 @@ def scrape_funds():
     # Get the month name dynamically
     month_name = get_month_name_two_months_ago()    
 
+    
     # Mock scraping logic: Replace with the correct HTML structure
     funds = []
     rows = soup.find_all("tr")  # Adjust this selector based on the table structure
@@ -76,6 +77,17 @@ def get_fund_by_index(index: int):
     if 0 <= index < len(funds_db):
         return funds_db[index]
     return {"error": "Fund not found"}
+
+@app.get("/funds/plan/{plan_name}", response_model=List[Fund])
+def get_funds_by_plan(plan_name: str):
+    """
+    Return funds matching the given investment plan.
+    """
+    filtered_funds = [
+        fund for fund in funds_db
+        if plan_name.lower() in fund['name'].lower()
+    ]
+    return filtered_funds
 
 # SUMMARY
 # Scrapes real-time data from a website.
