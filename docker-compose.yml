@@ -4,11 +4,9 @@ services:
   backend:
     build: ./backend
     ports:
-      - "8000:80"
-    networks:
-      - app-network
+      - "8000:8000"
 
-  react-app:   # Make sure this service name matches!
+  frontend:
     image: node:20
     working_dir: /app
     volumes:
@@ -16,11 +14,5 @@ services:
     command: sh -c "npm install && npm start"
     ports:
       - "3000:3000"
-    networks:
-      - app-network
     depends_on:
       - backend
-
-networks:
-  app-network:
-    driver: bridge

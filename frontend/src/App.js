@@ -1,33 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 function App() {
   const [funds, setFunds] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:8000/funds/")
-      .then((response) => setFunds(response.data))
-      .catch((error) => console.error("Error fetching data:", error));
+    axios.get("http://backend:8000/funds/")  // <-- Use "backend" here
+      .then((res) => setFunds(res.data))
+      .catch((err) => console.error("Error fetching data:", err));
   }, []);
-
-  const filteredFunds = funds.filter(fund =>
-    fund.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div style={{ textAlign: "center" }}>
-      <h1>קרנות השתלמות - Study Funds</h1>
-      <input
-        type="text"
-        placeholder="Search Funds..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{ padding: "8px", margin: "10px" }}
-      />
-      <table border="1" style={{ margin: "auto", width: "80%" }}>
+      <h1>Study Funds</h1>
+      <table border="1" style={{ width: "80%", margin: "auto" }}>
         <thead>
           <tr>
+            <th>ID</th>
             <th>Name</th>
             <th>Type</th>
             <th>Returns</th>
@@ -35,12 +24,13 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {filteredFunds.map(fund => (
+          {funds.map((fund) => (
             <tr key={fund.id}>
+              <td>{fund.id}</td>
               <td>{fund.name}</td>
               <td>{fund.type}</td>
-              <td>{fund.returns}</td>
-              <td>{fund.management_fee}</td>
+              <td>{fund.returns}%</td>
+              <td>{fund.management_fee}%</td>
             </tr>
           ))}
         </tbody>
