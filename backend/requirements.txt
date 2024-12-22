@@ -1,3 +1,5 @@
+# Python dependencies
+
 fastapi==0.95.2
 uvicorn==0.23.1
 beautifulsoup4==4.12.2
