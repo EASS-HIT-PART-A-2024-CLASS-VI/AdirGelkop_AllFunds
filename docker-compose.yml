@@ -1,11 +1,13 @@
 version: "3.8"
+
 services:
   backend:
     build:
-      context: .
+      context: ./backend  # Context points to the 'backend' folder
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app  # Mount the app directory for live updates
+      - ./backend/app:/app/app  # Mount 'app' folder to '/app/app'
     environment:
       - PYTHONUNBUFFERED=1
