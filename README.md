@@ -1,10 +1,11 @@
 # AdirGelkop_AllFunds
 
-**Study Funds Tracker**
+## **Study Funds Tracker**
 
-## **Overview**
-This project is a full-stack application that scrapes, processes, and displays investment fund data from the website **mygemel.net**.  
-The backend uses **FastAPI** for serving scraped data as a RESTful API, while the frontend is built with **React** for an interactive user interface. Both components are containerized with **Docker**.
+### **Overview**
+This project is a full-stack application that scrapes, processes, and displays investment fund data from the website **mygemel.net**. The backend uses **FastAPI** for serving scraped data as a RESTful API, while the frontend is built with **React** for an interactive user interface. Both components are containerized with **Docker**.
+
+---
 
 ## **Table of Contents**
 1. [Technologies Used](#technologies-used)
@@ -14,6 +15,8 @@ The backend uses **FastAPI** for serving scraped data as a RESTful API, while th
 5. [How to Run the Project](#how-to-run-the-project)
 6. [Future Work](#future-work)
 7. [Contact Info](#contact-info)
+
+---
 
 ## **Technologies Used**
 
@@ -32,6 +35,7 @@ The backend uses **FastAPI** for serving scraped data as a RESTful API, while th
 - **Docker** – Backend and frontend are fully containerized for simplified deployment.
 - **Docker Compose** – Orchestrates multi-container services.
 
+---
 
 ## **Project Features**
 
@@ -39,16 +43,18 @@ The backend uses **FastAPI** for serving scraped data as a RESTful API, while th
 - Real-time scraping from **mygemel.net**.
 - Exposes a RESTful API to serve scraped data.
 - Dynamic calculation of the current month for performance data.
+
 ### **Frontend:**
 - Displays investment funds in a clean, user-friendly table.
 - **Search functionality:** Allows users to search for funds by name.
-- **Dynamic filtering:** 
+- **Dynamic filtering:**
   - By **investment company name**.
   - By **investment type**.
 - **Navigation:**
   - Buttons for viewing individual plans.
   - Reset view functionality.
 
+---
 
 ## **Project Structure**
 
@@ -75,40 +81,57 @@ AdirGelkop_AllFunds/
 │
 ├── docker-compose.yml       # Multi-container management
 └── README.md                # Project documentation
+```
 
-**Endpoints (Backend)**
-1. GET /funds/
-Description: Returns a list of all scraped funds.
-2. GET /funds/{index}
-Description: Fetches the details of a specific fund by its ID.
-2. GET /funds/plan/{plan_name}
-Description: Returns a list of funds belonging to the specified investment plan.
+---
 
-**How to Run the Project**
-Prerequisites:
+## **Endpoints (Backend)**
+
+1. **GET /funds/**
+   - **Description:** Returns a list of all scraped funds.
+
+2. **GET /funds/{index}**
+   - **Description:** Fetches the details of a specific fund by its ID.
+
+3. **GET /funds/plan/{plan_name}**
+   - **Description:** Returns a list of funds belonging to the specified investment plan.
+
+---
+
+## **How to Run the Project**
+
+### **Prerequisites:**
 - Docker and Docker Compose installed.
 
-Step 1: Clone the Repository
+### **Step 1: Clone the Repository**
+```bash
 git clone https://github.com/your-repo-link.git
 cd AdirGelkop_AllFunds
+```
 
-Step 2: Build and Run Containers
+### **Step 2: Build and Run Containers**
+```bash
 docker compose up --build
+```
+- The backend will be available at: [http://localhost:8000](http://localhost:8000)
+- The frontend will be available at: [http://localhost:3000](http://localhost:3000)
 
-- The backend will be available at: http://localhost:8000
-- The frontend will be available at: http://localhost:3000
+### **Step 3: Use the Application**
+- Open [http://localhost:3000](http://localhost:3000) in your browser.
+- **Search Funds:** Use the search bar to filter by fund name.
+- **View Fund Details:** Click "View Fund" to display detailed information about a specific fund.
+- **Reset View:** Use the "Back to All Funds" button to return to the full list.
 
-Step 3: Use the Application
-- Open http://localhost:3000 in your browser.
-- Search Funds: Use the search bar to filter by fund name.
-- View Fund Details: Click "View Fund" to display detailed information about a specific fund.
-- Reset View: Use the "Back to All Funds" button to return to the full list.
+---
 
+## **Future Work**
+- **Enhancements:** Additional features such as advanced data visualization, user authentication, and export capabilities are planned.
+- **Optimization:** Improve the efficiency of scraping and filtering mechanisms.
 
-**Future Work**
-PLENTY
+---
 
-**Contact Info**
-Project Author: Adir Gelkop
-Email: adirgelkop@gmail.com
-GitHub: https://github.com/AdirGelkop
+## **Contact Info**
+- **Project Author:** Adir Gelkop
+- **Email:** [adirgelkop@gmail.com](mailto:adirgelkop@gmail.com)
+- **GitHub:** [Adir Gelkop](https://github.com/AdirGelkop)
+
