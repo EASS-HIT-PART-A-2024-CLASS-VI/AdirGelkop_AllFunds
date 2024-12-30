@@ -1,6 +1,9 @@
 // The main React component that renders the frontend.
 // It fetches data from the backend and displays it.
 
+// Import the CSS file
+import "./App.css";
+
 // Import React and its hooks
 import React, { useEffect, useState } from "react";
 
