@@ -1,7 +1,7 @@
 # All API endpoints in one file
 from fastapi import APIRouter
 from pydantic import BaseModel
-from typing import List, Dict
+from typing import List
 import requests
 from bs4 import BeautifulSoup
 import datetime
@@ -19,9 +19,24 @@ class Fund(BaseModel):
 
 # Helper function to get the month name two months ago
 def get_month_name_two_months_ago():
+    hebrew_months = {
+        "January": "ינואר",
+        "February": "פברואר",
+        "March": "מרץ",
+        "April": "אפריל",
+        "May": "מאי",
+        "June": "יוני",
+        "July": "יולי",
+        "August": "אוגוסט",
+        "September": "ספטמבר",
+        "October": "אוקטובר",
+        "November": "נובמבר",
+        "December": "דצמבר"
+    }
     today = datetime.date.today()
     two_months_ago = today - datetime.timedelta(days=60)
-    return two_months_ago.strftime("%B")
+    month_name = two_months_ago.strftime("%B")
+    return hebrew_months[month_name]
 
 # Scraping function: fetches and parses fund data
 def scrape_funds():
@@ -40,7 +55,7 @@ def scrape_funds():
         if len(cols) >= 5:
             funds.append({
                 "id": i,
-                "name": cols[0].text.strip(),
+                "name": translate_text(cols[0].text.strip(), "en"),
                 "month_performance": f"{month_name}: {cols[1].text.strip()}",
                 "last_year": cols[2].text.strip(),
                 "last_3_years": cols[3].text.strip(),

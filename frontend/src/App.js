@@ -40,7 +40,7 @@ function App() {
   return (
     <div style={{ fontFamily: "Arial", padding: "20px" }}>
       {/* Page title */}
-      <h1>Investment Funds</h1>
+      <h1>קרנות השתלמות</h1>
 
       {/* Display an error message if one exists */}
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
