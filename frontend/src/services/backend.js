@@ -1,43 +1,28 @@
-// Centralizes all API calls to the backend.
-// It abstracts the logic for fetching data,
-// making it reusable and keeping the main React components clean.
-
 const BASE_URL = "http://localhost:8000";
 
-/**
- * Fetches the list of funds from the backend
- * @returns {Promise<Array>} - A promise that resolves to the list of funds
- * @throws {Error} - Throws an error if the fetch fails
- */
-export const getFunds = async () => {
-  // Make an HTTP GET request to the backend's /funds/ endpoint
-  const response = await fetch(`${BASE_URL}/funds/`);
-
-  // Check if the request was successful (status code 200–299)
-  if (!response.ok) {
-    // If not, throw an error with a descriptive message
-    throw new Error("Failed to fetch funds");
-  }
-
-  // Parse the response body as JSON and return it
-  return await response.json();
+// Mapping of product names to URLs
+const PRODUCT_URLS = {
+  "קרנות השתלמות": "https://www.mygemel.net/%D7%A7%D7%A8%D7%A0%D7%95%D7%AA-%D7%94%D7%A9%D7%AA%D7%9C%D7%9E%D7%95%D7%AA",
+  "קופות גמל": "https://www.mygemel.net/%D7%A7%D7%95%D7%A4%D7%95%D7%AA-%D7%92%D7%9E%D7%9C",
+  "קופות גמל להשקעה": "https://www.mygemel.net/%D7%A7%D7%95%D7%A4%D7%95%D7%AA-%D7%92%D7%9E%D7%9C",
+  "פוליסות חיסכון": "https://www.mygemel.net/%D7%A4%D7%95%D7%9C%D7%99%D7%A1%D7%95%D7%AA-%D7%97%D7%99%D7%A1%D7%9B%D7%95%D7%9F",
+  "קרנות פנסיה": "https://www.mygemel.net/%D7%A4%D7%A0%D7%A1%D7%99%D7%94"
 };
 
 /**
- * Fetches funds by a specific product URL
- * @param {string} url - The product-specific URL for the API call
- * @returns {Promise<Array>} - A promise that resolves to the list of funds
- * @throws {Error} - Throws an error if the fetch fails
+ * Fetches funds data for a specific financial product.
+ * @param {string} productName - The name of the product.
+ * @returns {Promise<Array>} - A promise resolving to a list of funds.
+ * @throws {Error} - If the request fails.
  */
-export const getFundsByProduct = async (url) => {
-  // Make an HTTP GET request to the backend's /funds/product endpoint with the URL as a query parameter
-  const response = await fetch(`${BASE_URL}/funds/product?url=${encodeURIComponent(url)}`);
+export const getFundsByProduct = async (productName) => {
+  const productUrl = PRODUCT_URLS[productName];
+  if (!productUrl) throw new Error("Invalid product name");
 
-  // Check if the request was successful
-  if (!response.ok) {
-    throw new Error("Failed to fetch funds for the selected product");
-  }
+  const encodedUrl = encodeURIComponent(productUrl);
+  const response = await fetch(`${BASE_URL}/funds/product?url=${encodedUrl}`);
 
-  // Parse the response body as JSON and return it
+  if (!response.ok) throw new Error("Failed to fetch funds for the selected product");
+
   return await response.json();
 };

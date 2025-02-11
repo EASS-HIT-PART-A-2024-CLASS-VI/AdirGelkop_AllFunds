@@ -1,188 +1,90 @@
 import React, { useState } from "react";
-import "./App.css";
 import { getFundsByProduct } from "./services/backend";
+import "./App.css";
+import { motion } from "framer-motion";
+import { FaHome, FaChartLine, FaCoins } from "react-icons/fa";
 
 function App() {
-  // טאב דיפולט: "home"
   const [activeTab, setActiveTab] = useState("home");
   const [funds, setFunds] = useState([]);
   const [error, setError] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState("");
-  const [companyFilter, setCompanyFilter] = useState("");
-  const [productFilter, setProductFilter] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // שליפת נתונים מה-Backend
-  const fetchFundsByProduct = (product) => {
-    setSelectedProduct(product);
-    getFundsByProduct(product)
-      .then((data) => setFunds(data))
-      .catch((err) => setError(err.message));
-  };
+  const fetchFundsByProduct = async (productName) => {
+    setLoading(true);
+    setError("");
 
-  // בחירת התוכן שיוצג לפי הטאב
-  const renderContent = () => {
-    switch (activeTab) {
-      case "home":
-        return <Home />;
-      case "funds":
-        return (
-          <FundsList
-            funds={funds}
-            error={error}
-            selectedProduct={selectedProduct}
-            companyFilter={companyFilter}
-            productFilter={productFilter}
-            setCompanyFilter={setCompanyFilter}
-            setProductFilter={setProductFilter}
-            fetchFundsByProduct={fetchFundsByProduct}
-          />
-        );
-      case "comparison":
-        return <Comparison />;
-      default:
-        return <Home />;
+    try {
+      const data = await getFundsByProduct(productName);
+      setFunds(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="app-container">
-      {/* סרגל עליון (NavBar) */}
       <header className="navbar">
-        <div className="navbar-left">
-          <button
-            className={`nav-button ${activeTab === "home" ? "active" : ""}`}
-            onClick={() => setActiveTab("home")}
-          >
-            🏠 בית
-          </button>
-          <button
-            className={`nav-button ${activeTab === "funds" ? "active" : ""}`}
-            onClick={() => setActiveTab("funds")}
-          >
-            💰 רשימת קרנות
-          </button>
-          <button
-            className={`nav-button ${
-              activeTab === "comparison" ? "active" : ""
-            }`}
-            onClick={() => setActiveTab("comparison")}
-          >
-            📊 השוואה
-          </button>
-        </div>
-        <div className="navbar-right">
-          <h1 className="app-title animate-pop">ניהול קרנות השתלמות</h1>
-        </div>
+        <button className="nav-button" onClick={() => setActiveTab("home")}>
+          <FaHome /> Home
+        </button>
+        <button className="nav-button" onClick={() => setActiveTab("funds")}>
+          <FaCoins /> Funds List
+        </button>
+        <button className="nav-button" onClick={() => setActiveTab("comparison")}>
+          <FaChartLine /> Comparison
+        </button>
       </header>
 
-      {/* תוכן הדף */}
-      <main className="main-content fade-in">{renderContent()}</main>
-
-      {/* פוטר אופציונלי */}
-      <footer className="app-footer">
-        <p>© 2025 MyFunds Inc. | בנוי עם ❤️ ב-FastAPI & React</p>
-      </footer>
+      <main className="main-content">
+        {activeTab === "home" && <Home />}
+        {activeTab === "funds" && (
+          <FundsList funds={funds} fetchFundsByProduct={fetchFundsByProduct} error={error} loading={loading} />
+        )}
+        {activeTab === "comparison" && <Comparison />}
+      </main>
     </div>
   );
 }
 
-// עמוד הבית
-const Home = () => {
-  return (
-    <section className="home-section">
-      <h2 className="section-title">ברוכים הבאים לאתר קרנות ההשתלמות!</h2>
-      <p className="home-text">
-        כאן תוכלו למצוא מידע מקיף על מגוון מוצרים פיננסיים:
-        <br />
-        <strong>קרנות השתלמות, קופות גמל, פוליסות חיסכון, ועוד.</strong>
-      </p>
-      <p className="home-text highlight">
-        אנו שואפים לאפשר לכם לקבל את כל המידע החיוני בצורה נוחה, נעימה, ומתקדמת.
-      </p>
-    </section>
-  );
-};
+const Home = () => (
+  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+    <h1>Welcome to the Investment Funds Portal!</h1>
+    <p>Here, you can get all the information you need about financial products.</p>
+  </motion.div>
+);
 
-// רשימת קרנות
-const FundsList = ({
-  funds,
-  error,
-  selectedProduct,
-  companyFilter,
-  productFilter,
-  setCompanyFilter,
-  setProductFilter,
-  fetchFundsByProduct,
-}) => {
-  return (
-    <section>
-      <h2 className="section-title">רשימת קרנות</h2>
-      <p>בחרו מוצר פיננסי או חפשו לפי שם חברה/סוג מוצר:</p>
-
-      {/* בחירת מוצר פיננסי */}
-      <div className="product-buttons">
-        <button onClick={() => fetchFundsByProduct("קרנות השתלמות")}>
-          קרנות השתלמות
+const FundsList = ({ funds, fetchFundsByProduct, error, loading }) => (
+  <div>
+    <h2>Funds List</h2>
+    <div className="product-buttons">
+      {["קרנות השתלמות", "קופות גמל", "קופות גמל להשקעה", "פוליסות חיסכון", "קרנות פנסיה"].map((product) => (
+        <button key={product} onClick={() => fetchFundsByProduct(product)}>
+          {product}
         </button>
-        <button onClick={() => fetchFundsByProduct("קופות גמל")}>קופות גמל</button>
-        <button onClick={() => fetchFundsByProduct("קופות גמל להשקעה")}>
-          קופות גמל להשקעה
-        </button>
-        <button onClick={() => fetchFundsByProduct("פוליסות חיסכון")}>
-          פוליסות חיסכון
-        </button>
-        <button onClick={() => fetchFundsByProduct("קרנות פנסיה")}>
-          קרנות פנסיה
-        </button>
-      </div>
+      ))}
+    </div>
 
-      {/* סינון */}
-      <div className="filter-section">
-        <input
-          type="text"
-          placeholder="חפש לפי שם חברה"
-          value={companyFilter}
-          onChange={(e) => setCompanyFilter(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="חפש לפי סוג מוצר פיננסי"
-          value={productFilter}
-          onChange={(e) => setProductFilter(e.target.value)}
-        />
-        <button onClick={() => fetchFundsByProduct(selectedProduct)}>חפש</button>
-      </div>
+    {loading && <p>Loading data...</p>}
+    {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
-      {/* הודעת שגיאה */}
-      {error && <p style={{ color: "red" }}>שגיאה: {error}</p>}
+    <ul>
+      {funds.map((fund) => (
+        <li key={fund.id}>
+          <strong>{fund.name}</strong>: {fund.month_performance}
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 
-      {/* רשימת הקרנות */}
-      <ul className="fund-list">
-        {funds.map((fund) => (
-          <li key={fund.id} className="fund-item pop-on-hover">
-            <strong>{fund.name}</strong>: {fund.month_performance}
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-};
-
-// עמוד השוואה
-const Comparison = () => {
-  return (
-    <section>
-      <h2 className="section-title">השוואה בין קרנות</h2>
-      <p>
-        כאן תוכלו להשוות ביצועים של קרנות השתלמות שונות, לצפות בנתוני תשואה לאורך
-        זמן, ולעשות בחירות מושכלות יותר לעתיד הפיננסי שלכם.
-      </p>
-      <div className="comparison-placeholder">
-        <span className="emoji-compare">🤔</span>
-        <span>בקרוב: גרפים וטבלאות השוואה מדהימות!</span>
-      </div>
-    </section>
-  );
-};
+const Comparison = () => (
+  <div>
+    <h2>Comparison</h2>
+    <p>Compare investment funds and make informed decisions.</p>
+  </div>
+);
 
 export default App;

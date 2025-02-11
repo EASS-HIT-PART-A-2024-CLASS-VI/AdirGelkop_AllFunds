@@ -11,11 +11,10 @@ ENV PATH /app/node_modules/.bin:$PATH
 ENV BROWSERSLIST_DISABLE_CACHE=1
 ENV CI=true
 
-# Copy package.json and package-lock.json to leverage Docker caching
-COPY package.json .
-#COPY package-lock.json .
+# Copy package.json first to leverage caching
+COPY package.json ./
 
-# Install Node.js dependencies
+# Install all dependencies (without package-lock.json)
 RUN npm install
 
 # Copy the entire frontend folder, including source code and public files
