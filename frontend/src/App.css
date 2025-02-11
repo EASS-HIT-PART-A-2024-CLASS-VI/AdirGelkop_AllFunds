@@ -9,6 +9,7 @@
 body {
   direction: rtl;
   font-family: 'Alef', sans-serif;
+<<<<<<< HEAD
   background: linear-gradient(135deg, #1c1c1c, #343a40);
   color: #fff;
   overflow-x: hidden;
@@ -25,14 +26,23 @@ body {
 }
 
 /* Main container with glassmorphism effect */
+=======
+  background: linear-gradient(135deg, #1c1c1c, #343a40); /* Simple gradient */
+  color: #fff;
+  overflow-x: hidden;
+}
+
+
+/* Ensuring the app layout follows full height structure */
+>>>>>>> origin/main
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: rgba(255, 255, 255, 0.8);
 }
 
 /* Main content should expand to push the footer down */
+<<<<<<< HEAD
 .main-content {
   flex: 1;
   padding: 40px;
@@ -71,13 +81,15 @@ body {
 }
 
 /* Main Content */
+=======
+>>>>>>> origin/main
 .main-content {
   flex: 1;
   padding: 40px;
   text-align: center;
-  animation: fadeIn 1s ease;
 }
 
+<<<<<<< HEAD
 /* Funds Table with Glassmorphism */
 .funds-table {
   width: 90%;
@@ -133,6 +145,20 @@ body {
 }
 
 /* Footer */
+=======
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 123, 255, 0.2);
+  padding: 15px 20px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Footer should always stay at the bottom */
+>>>>>>> origin/main
 .footer {
   text-align: center;
   background-color: rgba(0, 123, 255, 0.9);
@@ -143,6 +169,7 @@ body {
   position: relative;
   bottom: 0;
   width: 100%;
+<<<<<<< HEAD
 }
 
 .footer a {
@@ -153,6 +180,8 @@ body {
 
 .footer a:hover {
   text-decoration: underline;
+=======
+>>>>>>> origin/main
 }
 .home-buttons {
   display: flex;

@@ -19,6 +19,7 @@ function App() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Fetch funds data based on the selected product
   const fetchFundsByProduct = async (productName) => {
     setLoading(true);
     setError("");
@@ -32,18 +33,24 @@ function App() {
     }
   };
 
+
+  const bgImage = process.env.PUBLIC_URL + "/bg_1.jpg"; // Define background image path
   return (
-    <div className="app-container">
+    <div className="app-container" style={{ 
+      backgroundSize: "cover", 
+      backgroundPosition: "center", 
+      backgroundAttachment: "fixed"
+    }}>
       <header className="navbar">
-        <button className="nav-button" onClick={() => setActiveTab("home")}>
-          <FaHome /> בית
-        </button>
-        <button className="nav-button" onClick={() => setActiveTab("funds")}>
-          <FaCoins /> רשימת קרנות
-        </button>
-        <button className="nav-button" onClick={() => setActiveTab("comparison")}>
-          <FaChartLine /> השוואה
-        </button>
+        <motion.button className="nav-button" onClick={() => setActiveTab("home")} whileHover={{ scale: 1.15 }}>
+          <FaHome /> Home
+        </motion.button>
+        <motion.button className="nav-button" onClick={() => setActiveTab("funds")} whileHover={{ scale: 1.15 }}>
+          <FaCoins /> Funds List
+        </motion.button>
+        <motion.button className="nav-button" onClick={() => setActiveTab("comparison")} whileHover={{ scale: 1.15 }}>
+          <FaChartLine /> Comparison
+        </motion.button>
       </header>
       <main className="main-content">
         {activeTab === "home" && <Home setActiveTab={setActiveTab} />}
@@ -56,6 +63,7 @@ function App() {
       <Footer />
     </div>
   );
+
 }
 
 const Home = ({ setActiveTab }) => (
