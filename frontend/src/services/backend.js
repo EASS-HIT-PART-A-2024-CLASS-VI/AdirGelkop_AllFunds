@@ -4,10 +4,11 @@ const BASE_URL = "http://localhost:8000";
 const PRODUCT_URLS = {
   "קרנות השתלמות": "https://www.mygemel.net/קרנות-השתלמות",
   "קופות גמל": "https://www.mygemel.net/קופות-גמל",
-  "קופות גמל להשקעה": "https://www.mygemel.net/קופות-גמל-להשקעה",
+  "קופות גמל להשקעה": "https://www.mygemel.net/קופת-גמל-להשקעה",  // ✅ תוקן
   "פוליסות חיסכון": "https://www.mygemel.net/פוליסות-חיסכון",
-  "קרנות פנסיה": "https://www.mygemel.net/קרנות-פנסיה"
+  "קרנות פנסיה": "https://www.mygemel.net/פנסיה"  
 };
+
 
 /**
  * Fetches funds data for a specific financial product.
