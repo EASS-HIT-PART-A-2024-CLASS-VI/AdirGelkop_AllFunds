@@ -9,50 +9,30 @@
 body {
   direction: rtl;
   font-family: 'Alef', sans-serif;
-<<<<<<< HEAD
   background: linear-gradient(135deg, #1c1c1c, #343a40);
   color: #fff;
   overflow-x: hidden;
-  animation: fadeInBackground 3s ease-in-out infinite alternate;
 }
 
-@keyframes fadeInBackground {
-  from {
-    background: linear-gradient(135deg, #1c1c1c, #343a40);
-  }
-  to {
-    background: linear-gradient(135deg, #101010, #222);
-  }
-}
-
-/* Main container with glassmorphism effect */
-=======
-  background: linear-gradient(135deg, #1c1c1c, #343a40); /* Simple gradient */
-  color: #fff;
-  overflow-x: hidden;
-}
-
-
-/* Ensuring the app layout follows full height structure */
->>>>>>> origin/main
+/* Main container with full-height support */
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  height: 100vh;
 }
 
 /* Main content should expand to push the footer down */
-<<<<<<< HEAD
 .main-content {
   flex: 1;
   padding: 40px;
   text-align: center;
 }
 
-/* Top Navigation Bar */
+/* Navigation Bar */
 .navbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end; /* Aligns items to the right for RTL */
   align-items: center;
   background: rgba(0, 123, 255, 0.15);
   padding: 15px 20px;
@@ -80,46 +60,6 @@ body {
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-/* Main Content */
-=======
->>>>>>> origin/main
-.main-content {
-  flex: 1;
-  padding: 40px;
-  text-align: center;
-}
-
-<<<<<<< HEAD
-/* Funds Table with Glassmorphism */
-.funds-table {
-  width: 90%;
-  max-width: 900px;
-  margin: 20px auto;
-  border-collapse: collapse;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.funds-table th, .funds-table td {
-  padding: 14px;
-  text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.funds-table th {
-  background: rgba(0, 123, 255, 0.3);
-  color: white;
-}
-
-.funds-table tr:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.02);
-  transition: 0.3s ease-in-out;
-}
-
 /* Product Buttons */
 .product-buttons {
   display: flex;
@@ -145,20 +85,6 @@ body {
 }
 
 /* Footer */
-=======
-/* Navbar */
-.navbar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0, 123, 255, 0.2);
-  padding: 15px 20px;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-/* Footer should always stay at the bottom */
->>>>>>> origin/main
 .footer {
   text-align: center;
   background-color: rgba(0, 123, 255, 0.9);
@@ -166,10 +92,9 @@ body {
   padding: 15px;
   font-size: 1rem;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
-  position: relative;
+  position: fixed;
   bottom: 0;
   width: 100%;
-<<<<<<< HEAD
 }
 
 .footer a {
@@ -180,9 +105,9 @@ body {
 
 .footer a:hover {
   text-decoration: underline;
-=======
->>>>>>> origin/main
 }
+
+/* Home Buttons */
 .home-buttons {
   display: flex;
   justify-content: center;
@@ -191,6 +116,7 @@ body {
   margin-top: 20px;
 }
 
+/* Info Buttons */
 .info-button {
   background: linear-gradient(135deg, #ff9800, #e65100);
   color: white;
@@ -206,24 +132,4 @@ body {
 .info-button:hover {
   background: linear-gradient(135deg, #e65100, #bf360c);
   transform: scale(1.1);
-}
-
-.financial-product {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 20px;
-  margin: 30px auto;
-  max-width: 700px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.financial-product h2 {
-  font-size: 2rem;
-  color: #ff9800;
-}
-
-.financial-product p {
-  font-size: 1.2rem;
-  color: #ddd;
-  line-height: 1.6;
 }

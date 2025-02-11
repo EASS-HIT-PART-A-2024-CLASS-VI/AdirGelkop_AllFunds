@@ -33,23 +33,17 @@ function App() {
     }
   };
 
-
-  const bgImage = process.env.PUBLIC_URL + "/bg_1.jpg"; // Define background image path
   return (
-    <div className="app-container" style={{ 
-      backgroundSize: "cover", 
-      backgroundPosition: "center", 
-      backgroundAttachment: "fixed"
-    }}>
+    <div className="app-container">
       <header className="navbar">
-        <motion.button className="nav-button" onClick={() => setActiveTab("home")} whileHover={{ scale: 1.15 }}>
-          <FaHome /> Home
+        <motion.button className="nav-button" aria-label="Home" onClick={() => setActiveTab("home")} whileHover={{ scale: 1.15 }}>
+          <FaHome /> בית
         </motion.button>
-        <motion.button className="nav-button" onClick={() => setActiveTab("funds")} whileHover={{ scale: 1.15 }}>
-          <FaCoins /> Funds List
+        <motion.button className="nav-button" aria-label="Funds List" onClick={() => setActiveTab("funds")} whileHover={{ scale: 1.15 }}>
+          <FaCoins /> רשימת קרנות
         </motion.button>
-        <motion.button className="nav-button" onClick={() => setActiveTab("comparison")} whileHover={{ scale: 1.15 }}>
-          <FaChartLine /> Comparison
+        <motion.button className="nav-button" aria-label="Comparison" onClick={() => setActiveTab("comparison")} whileHover={{ scale: 1.15 }}>
+          <FaChartLine /> השוואה
         </motion.button>
       </header>
       <main className="main-content">
@@ -63,7 +57,6 @@ function App() {
       <Footer />
     </div>
   );
-
 }
 
 const Home = ({ setActiveTab }) => (
@@ -73,7 +66,7 @@ const Home = ({ setActiveTab }) => (
 
     <div className="home-buttons">
       {Object.keys(PRODUCT_INFO).map((product) => (
-        <button key={product} className="info-button" onClick={() => setActiveTab(product)}>
+        <button key={product} className="info-button" aria-label={`Learn about ${product}`} onClick={() => setActiveTab(product)}>
           {product}
         </button>
       ))}
