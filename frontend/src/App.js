@@ -19,7 +19,6 @@ function App() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Fetch funds data based on the selected product
   const fetchFundsByProduct = async (productName) => {
     setLoading(true);
     setError("");
@@ -36,21 +35,19 @@ function App() {
   return (
     <div className="app-container">
       <header className="navbar">
-        <motion.button className="nav-button" aria-label="Home" onClick={() => setActiveTab("home")} whileHover={{ scale: 1.15 }}>
+        <motion.button className="nav-button" onClick={() => setActiveTab("home")} whileHover={{ scale: 1.15 }}>
           <FaHome /> בית
         </motion.button>
-        <motion.button className="nav-button" aria-label="Funds List" onClick={() => setActiveTab("funds")} whileHover={{ scale: 1.15 }}>
+        <motion.button className="nav-button" onClick={() => setActiveTab("funds")} whileHover={{ scale: 1.15 }}>
           <FaCoins /> רשימת קרנות
         </motion.button>
-        <motion.button className="nav-button" aria-label="Comparison" onClick={() => setActiveTab("comparison")} whileHover={{ scale: 1.15 }}>
+        <motion.button className="nav-button" onClick={() => setActiveTab("comparison")} whileHover={{ scale: 1.15 }}>
           <FaChartLine /> השוואה
         </motion.button>
       </header>
       <main className="main-content">
         {activeTab === "home" && <Home setActiveTab={setActiveTab} />}
-        {activeTab === "funds" && (
-          <FundsList funds={funds} fetchFundsByProduct={fetchFundsByProduct} error={error} loading={loading} />
-        )}
+        {activeTab === "funds" && <FundsList funds={funds} fetchFundsByProduct={fetchFundsByProduct} error={error} loading={loading} />}
         {activeTab === "comparison" && <Comparison />}
         {PRODUCT_INFO[activeTab] && <FinancialProduct title={activeTab} content={PRODUCT_INFO[activeTab]} />}
       </main>
@@ -63,10 +60,9 @@ const Home = ({ setActiveTab }) => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
     <h1>ברוכים הבאים לפורטל קרנות ההשקעה! 🚀</h1>
     <p>כאן תוכלו ללמוד על מוצרים פיננסיים שונים ולהבין כיצד לבחור את הקרן המתאימה לכם.</p>
-
     <div className="home-buttons">
       {Object.keys(PRODUCT_INFO).map((product) => (
-        <button key={product} className="info-button" aria-label={`Learn about ${product}`} onClick={() => setActiveTab(product)}>
+        <button key={product} className="info-button" onClick={() => setActiveTab(product)}>
           {product}
         </button>
       ))}

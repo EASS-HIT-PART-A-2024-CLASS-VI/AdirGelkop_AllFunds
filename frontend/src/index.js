@@ -8,12 +8,16 @@ import App from "./App";
 // Find the root element in the HTML where the React app will be rendered
 const rootElement = document.getElementById("root");
 
-// Create the root for ReactDOM
-const root = ReactDOM.createRoot(rootElement);
+if (!rootElement) {
+  console.error("❌ Error: No root element found in index.html");
+} else {
+  // Create the root for ReactDOM
+  const root = ReactDOM.createRoot(rootElement);
 
-// Render the App component
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+  // Render the App component
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}
