@@ -134,3 +134,23 @@ body {
   font-size: 0.9rem;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
+
+/* Footer Section */
+.footer {
+  text-align: center;
+  background-color: rgba(0, 123, 255, 0.9);
+  color: white;
+  padding: 15px;
+  font-size: 1rem;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.footer a {
+  color: yellow;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}

@@ -1,12 +1,12 @@
 const BASE_URL = "http://localhost:8000";
 
-// Mapping of product names to URLs
+// Corrected mapping of product names to valid URLs
 const PRODUCT_URLS = {
-  "קרנות השתלמות": "https://www.mygemel.net/%D7%A7%D7%A8%D7%A0%D7%95%D7%AA-%D7%94%D7%A9%D7%AA%D7%9C%D7%9E%D7%95%D7%AA",
-  "קופות גמל": "https://www.mygemel.net/%D7%A7%D7%95%D7%A4%D7%95%D7%AA-%D7%92%D7%9E%D7%9C",
-  "קופות גמל להשקעה": "https://www.mygemel.net/%D7%A7%D7%95%D7%A4%D7%95%D7%AA-%D7%92%D7%9E%D7%9C",
-  "פוליסות חיסכון": "https://www.mygemel.net/%D7%A4%D7%95%D7%9C%D7%99%D7%A1%D7%95%D7%AA-%D7%97%D7%99%D7%A1%D7%9B%D7%95%D7%9F",
-  "קרנות פנסיה": "https://www.mygemel.net/%D7%A4%D7%A0%D7%A1%D7%99%D7%94"
+  "קרנות השתלמות": "https://www.mygemel.net/קרנות-השתלמות",
+  "קופות גמל": "https://www.mygemel.net/קופות-גמל",
+  "קופות גמל להשקעה": "https://www.mygemel.net/קופות-גמל-להשקעה",
+  "פוליסות חיסכון": "https://www.mygemel.net/פוליסות-חיסכון",
+  "קרנות פנסיה": "https://www.mygemel.net/קרנות-פנסיה"
 };
 
 /**
