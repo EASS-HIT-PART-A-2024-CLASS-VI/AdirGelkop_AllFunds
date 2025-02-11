@@ -1,3 +1,4 @@
+// App.js
 import React, { useState } from "react";
 import { getFundsByProduct } from "./services/backend";
 import "./App.css";
@@ -13,7 +14,6 @@ function App() {
   const fetchFundsByProduct = async (productName) => {
     setLoading(true);
     setError("");
-
     try {
       const data = await getFundsByProduct(productName);
       setFunds(data);
@@ -28,16 +28,15 @@ function App() {
     <div className="app-container">
       <header className="navbar">
         <button className="nav-button" onClick={() => setActiveTab("home")}>
-          <FaHome /> Home
+          <FaHome /> בית
         </button>
         <button className="nav-button" onClick={() => setActiveTab("funds")}>
-          <FaCoins /> Funds List
+          <FaCoins /> רשימת קרנות
         </button>
         <button className="nav-button" onClick={() => setActiveTab("comparison")}>
-          <FaChartLine /> Comparison
+          <FaChartLine /> השוואה
         </button>
       </header>
-
       <main className="main-content">
         {activeTab === "home" && <Home />}
         {activeTab === "funds" && (
@@ -51,14 +50,14 @@ function App() {
 
 const Home = () => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-    <h1>Welcome to the Investment Funds Portal!</h1>
-    <p>Here, you can get all the information you need about financial products.</p>
+    <h1>ברוכים הבאים לפורטל קרנות ההשקעה! 🚀</h1>
+    <p>כאן תוכלו לקבל את כל המידע הדרוש על מוצרים פיננסיים.</p>
   </motion.div>
 );
 
 const FundsList = ({ funds, fetchFundsByProduct, error, loading }) => (
   <div>
-    <h2>Funds List</h2>
+    <h2>📊 רשימת קרנות</h2>
     <div className="product-buttons">
       {["קרנות השתלמות", "קופות גמל", "קופות גמל להשקעה", "פוליסות חיסכון", "קרנות פנסיה"].map((product) => (
         <button key={product} onClick={() => fetchFundsByProduct(product)}>
@@ -66,24 +65,31 @@ const FundsList = ({ funds, fetchFundsByProduct, error, loading }) => (
         </button>
       ))}
     </div>
-
-    {loading && <p>Loading data...</p>}
-    {error && <p style={{ color: "red" }}>Error: {error}</p>}
-
-    <ul>
-      {funds.map((fund) => (
-        <li key={fund.id}>
-          <strong>{fund.name}</strong>: {fund.month_performance}
-        </li>
-      ))}
-    </ul>
+    {loading && <p>🔄 טוען נתונים...</p>}
+    {error && <p style={{ color: "red" }}>❌ שגיאה: {error}</p>}
+    <table className="funds-table">
+      <thead>
+        <tr>
+          <th>שם הקרן</th>
+          <th>תשואה חודשית</th>
+        </tr>
+      </thead>
+      <tbody>
+        {funds.map((fund) => (
+          <tr key={fund.id}>
+            <td>{fund.name}</td>
+            <td>{fund.month_performance}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   </div>
 );
 
 const Comparison = () => (
   <div>
-    <h2>Comparison</h2>
-    <p>Compare investment funds and make informed decisions.</p>
+    <h2>📈 השוואת קרנות</h2>
+    <p>השוו בין קרנות ובצעו החלטות פיננסיות חכמות.</p>
   </div>
 );
 

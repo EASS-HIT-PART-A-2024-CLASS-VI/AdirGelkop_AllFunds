@@ -16,13 +16,28 @@ const PRODUCT_URLS = {
  * @throws {Error} - If the request fails.
  */
 export const getFundsByProduct = async (productName) => {
-  const productUrl = PRODUCT_URLS[productName];
-  if (!productUrl) throw new Error("Invalid product name");
+  try {
+    const productUrl = PRODUCT_URLS[productName];
+    if (!productUrl) {
+      console.error(`Invalid product name: ${productName}`);
+      throw new Error("Invalid product name");
+    }
 
-  const encodedUrl = encodeURIComponent(productUrl);
-  const response = await fetch(`${BASE_URL}/funds/product?url=${encodedUrl}`);
+    const encodedUrl = encodeURIComponent(productUrl);
+    console.log(`Fetching data for: ${productName} (${productUrl})`);
+    
+    const response = await fetch(`${BASE_URL}/funds/product?url=${encodedUrl}`);
 
-  if (!response.ok) throw new Error("Failed to fetch funds for the selected product");
+    if (!response.ok) {
+      console.error(`Failed to fetch data: ${response.statusText}`);
+      throw new Error("Failed to fetch funds for the selected product");
+    }
 
-  return await response.json();
+    const data = await response.json();
+    console.log("Fetched data successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching funds:", error);
+    throw error;
+  }
 };
