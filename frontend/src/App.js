@@ -36,69 +36,31 @@ function App() {
           <FaChartLine /> השוואה
         </button>
       </header>
-      <main className="main-content">
+
+      <motion.main className="main-content" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
         {activeTab === "home" && <Home />}
         {activeTab === "funds" && (
           <FundsList funds={funds} fetchFundsByProduct={fetchFundsByProduct} error={error} loading={loading} />
         )}
         {activeTab === "comparison" && <Comparison />}
-      </main>
+      </motion.main>
+
       <Footer />
     </div>
   );
 }
 
 const Home = () => (
-  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-    <h1>ברוכים הבאים לפורטל קרנות ההשקעה! 🚀</h1>
+  <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.8 }}>
+    <h1>🚀 ברוכים הבאים לפורטל קרנות ההשקעה!</h1>
     <p>כאן תוכלו לקבל את כל המידע הדרוש על מוצרים פיננסיים.</p>
   </motion.div>
-);
-
-const FundsList = ({ funds, fetchFundsByProduct, error, loading }) => (
-  <div>
-    <h2>📊 רשימת קרנות</h2>
-    <div className="product-buttons">
-      {["קרנות השתלמות", "קופות גמל", "קופות גמל להשקעה", "פוליסות חיסכון", "קרנות פנסיה"].map((product) => (
-        <button key={product} onClick={() => fetchFundsByProduct(product)}>
-          {product}
-        </button>
-      ))}
-    </div>
-    {loading && <p>🔄 טוען נתונים...</p>}
-    {error && <p style={{ color: "red" }}>❌ שגיאה: {error}</p>}
-    <table className="funds-table">
-      <thead>
-        <tr>
-          <th>שם הקרן</th>
-          <th>תשואה חודשית</th>
-          <th>תשואה שנתית</th>
-          <th>תשואה 3 שנים</th>
-          <th>תשואה 5 שנים</th>
-        </tr>
-      </thead>
-      <tbody>
-        {funds.map((fund) => (
-          <tr key={fund.id}>
-            <td>{fund.name}</td>
-            <td>{fund.month_performance || "N/A"}</td>
-            <td>{fund.last_year || "N/A"}</td>
-            <td>{fund.last_3_years || "N/A"}</td>
-            <td>{fund.last_5_years || "N/A"}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
 );
 
 const Comparison = () => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
     <h2>📈 השוואת קרנות</h2>
     <p>השוו בין קרנות ובצעו החלטות פיננסיות חכמות.</p>
-    <div className="comparison-placeholder">
-      <p>🔍 בקרוב: טבלת השוואה אינטראקטיבית לקרנות!</p>
-    </div>
   </motion.div>
 );
 
