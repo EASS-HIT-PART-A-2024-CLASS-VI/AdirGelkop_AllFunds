@@ -17,7 +17,7 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
-// Filter substring based on fund type (using real scraped data)
+// This function returns a substring to filter the scraped funds
 const getFilterSubstring = (fundType) => {
   switch (fundType) {
     case "קרנות השתלמות":
@@ -70,7 +70,11 @@ const InvestmentPrediction = () => {
   useEffect(() => {
     if (selectedFundType) {
       const filterStr = getFilterSubstring(selectedFundType);
-      const filtered = funds.filter((f) => f.name.includes(filterStr));
+      let filtered = funds.filter((f) => f.name.includes(filterStr));
+      // If no funds match the filter, show all funds (so the dropdown is not empty)
+      if (filtered.length === 0) {
+        filtered = funds;
+      }
       setFilteredFunds(filtered);
     } else {
       setFilteredFunds([]);
@@ -162,7 +166,7 @@ const InvestmentPrediction = () => {
         </div>
       )}
       <div style={{ marginBottom: "15px" }}>
-        <label>הזינו סכום (בש"ח): </label>
+        <label>הזינו סכום (בשקלים חדשים): </label>
         <input
           type="number"
           value={amount}
@@ -194,7 +198,7 @@ const InvestmentPrediction = () => {
       </button>
       {result && (
         <div style={{ marginTop: "20px", fontSize: "1.2rem", fontWeight: "bold" }}>
-          הערך הצפוי: {result} שקלים חדשים
+          הערך הצפוי: {result} בשקלים חדשים
         </div>
       )}
       {chartData.length > 0 && (
