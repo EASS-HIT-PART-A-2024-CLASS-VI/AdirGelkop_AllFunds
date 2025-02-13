@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { getFundsByProduct } from "./services/backend";
 import "./App.css";
 import FinancialProduct from "./FinancialProduct";
+import InvestmentPrediction from "./InvestmentPrediction";
 import { motion, useViewportScroll, useTransform } from "framer-motion";
 import { FaHome, FaChartLine, FaCoins } from "react-icons/fa";
 
@@ -56,7 +57,6 @@ function App() {
   return (
     <div className="app-container">
       <header className="navbar">
-        {/* In RTL: "בית" on the right, "רשימת קרנות" in the center, "השוואה" on the left */}
         <motion.button 
           className="nav-button" 
           onClick={() => setActiveTab("home")} 
@@ -92,7 +92,6 @@ function App() {
         {activeTab === "home" && <Home />}
         {activeTab === "funds" && (
           <>
-            {/* Product type buttons */}
             <div className="product-buttons">
               {Object.keys(PRODUCT_INFO).map((product) => (
                 <motion.button
@@ -111,7 +110,6 @@ function App() {
                 </motion.button>
               ))}
             </div>
-            {/* Display selected product general info */}
             {selectedProduct && (
               <FinancialProduct
                 title={selectedProduct}
@@ -135,8 +133,8 @@ const Home = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial="hidden"
+      animate="visible"
       transition={{ duration: 1 }}
       style={{ padding: "30px", lineHeight: "2", textAlign: "center" }}
     >
@@ -174,7 +172,13 @@ const Home = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        style={{ width: "80%", margin: "30px auto", display: "block", borderRadius: "10px", y: yImage1 }}
+        style={{
+          width: "80%",
+          margin: "30px auto",
+          display: "block",
+          borderRadius: "10px",
+          y: yImage1
+        }}
       />
       <motion.p 
         style={{ marginBottom: "20px", fontSize: "1.1rem" }}
@@ -192,7 +196,13 @@ const Home = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        style={{ width: "80%", margin: "30px auto", display: "block", borderRadius: "10px", y: yImage2 }}
+        style={{
+          width: "80%",
+          margin: "30px auto",
+          display: "block",
+          borderRadius: "10px",
+          y: yImage2
+        }}
       />
       <motion.p 
         style={{ marginBottom: "20px", fontSize: "1.1rem" }}
@@ -343,7 +353,7 @@ const Comparison = () => {
             width: "45%",
             borderRadius: "10px",
             objectFit: "cover",
-            objectPosition: "80%" // shifting cropping further to the right
+            objectPosition: "90%" // shifted further to the right
           }}
           variants={fadeInUp}
           initial="hidden"
@@ -360,10 +370,10 @@ const Comparison = () => {
           viewport={{ once: true }}
         />
       </div>
+      <InvestmentPrediction />
     </motion.div>
   );
 };
-
 
 const Footer = () => {
   return (
