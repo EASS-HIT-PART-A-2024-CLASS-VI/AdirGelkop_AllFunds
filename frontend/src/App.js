@@ -12,7 +12,7 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
-// Dummy product information for display on the Home page
+// Product information for Home display
 const PRODUCT_INFO = {
   "קרנות השתלמות": 
     "קרנות השתלמות הן כלי חיסכון לטווח בינוני שמאפשר הפקדות קבועות ומציע הטבות מס ניכרות. הן מתאימות לאנשים המחפשים לשמור על חיסכון נזיל אך בטוח, ובמקביל ליהנות מהטבות מס משמעותיות.\n\n" +
@@ -355,7 +355,7 @@ const Comparison = () => {
             width: "45%",
             borderRadius: "10px",
             objectFit: "cover",
-            objectPosition: "90%" // shift further to the right as requested
+            objectPosition: "90%" // shifted further to the right
           }}
           variants={fadeInUp}
           initial="hidden"
