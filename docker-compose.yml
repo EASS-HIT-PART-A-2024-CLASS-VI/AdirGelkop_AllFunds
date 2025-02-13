@@ -20,6 +20,6 @@ services:
       - "3000:3000"  # Expose frontend on port 3000
     stdin_open: true  # Keep container interactive
     tty: true  # Keep container running
-    volumes:
-      - ./frontend:/app  # Mount the frontend folder for live updates
-      - /app/node_modules  # Prevent volume overwrite issues with node_modules
+#    volumes:
+#      - ./frontend:/app  # Mount the frontend folder for live updates
+#      - /app/node_modules  # Prevent volume overwrite issues with node_modules

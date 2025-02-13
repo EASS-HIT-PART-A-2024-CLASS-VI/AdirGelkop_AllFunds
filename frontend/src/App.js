@@ -35,21 +35,42 @@ function App() {
   return (
     <div className="app-container">
       <header className="navbar">
-        <motion.button className="nav-button" onClick={() => setActiveTab("home")} whileHover={{ scale: 1.15 }}>
+        <motion.button
+          className="nav-button"
+          onClick={() => setActiveTab("home")}
+          whileHover={{ scale: 1.15 }}
+        >
           <FaHome /> בית
         </motion.button>
-        <motion.button className="nav-button" onClick={() => setActiveTab("funds")} whileHover={{ scale: 1.15 }}>
+        <motion.button
+          className="nav-button"
+          onClick={() => setActiveTab("funds")}
+          whileHover={{ scale: 1.15 }}
+        >
           <FaCoins /> רשימת קרנות
         </motion.button>
-        <motion.button className="nav-button" onClick={() => setActiveTab("comparison")} whileHover={{ scale: 1.15 }}>
+        <motion.button
+          className="nav-button"
+          onClick={() => setActiveTab("comparison")}
+          whileHover={{ scale: 1.15 }}
+        >
           <FaChartLine /> השוואה
         </motion.button>
       </header>
       <main className="main-content">
         {activeTab === "home" && <Home setActiveTab={setActiveTab} />}
-        {activeTab === "funds" && <FundsList funds={funds} fetchFundsByProduct={fetchFundsByProduct} error={error} loading={loading} />}
+        {activeTab === "funds" && (
+          <FundsList
+            funds={funds}
+            fetchFundsByProduct={fetchFundsByProduct}
+            error={error}
+            loading={loading}
+          />
+        )}
         {activeTab === "comparison" && <Comparison />}
-        {PRODUCT_INFO[activeTab] && <FinancialProduct title={activeTab} content={PRODUCT_INFO[activeTab]} />}
+        {PRODUCT_INFO[activeTab] && (
+          <FinancialProduct title={activeTab} content={PRODUCT_INFO[activeTab]} />
+        )}
       </main>
       <Footer />
     </div>
@@ -59,7 +80,9 @@ function App() {
 const Home = ({ setActiveTab }) => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
     <h1>ברוכים הבאים לפורטל קרנות ההשקעה! 🚀</h1>
-    <p>כאן תוכלו ללמוד על מוצרים פיננסיים שונים ולהבין כיצד לבחור את הקרן המתאימה לכם.</p>
+    <p>
+      כאן תוכלו ללמוד על מוצרים פיננסיים שונים ולהבין כיצד לבחור את הקרן המתאימה לכם.
+    </p>
     <div className="home-buttons">
       {Object.keys(PRODUCT_INFO).map((product) => (
         <button key={product} className="info-button" onClick={() => setActiveTab(product)}>
@@ -69,5 +92,41 @@ const Home = ({ setActiveTab }) => (
     </div>
   </motion.div>
 );
+
+const FundsList = ({ funds, fetchFundsByProduct, error, loading }) => {
+  return (
+    <div>
+      <h2>רשימת קרנות</h2>
+      {loading && <p>טוען...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {funds && funds.length > 0 ? (
+        <ul>
+          {funds.map((fund) => (
+            <li key={fund.id}>{fund.name}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>אין נתונים להצגה</p>
+      )}
+    </div>
+  );
+};
+
+const Comparison = () => {
+  return (
+    <div>
+      <h2>השוואה</h2>
+      <p>תוכן השוואה יופיע כאן.</p>
+    </div>
+  );
+};
+
+const Footer = () => {
+  return (
+    <footer className="footer">
+      <p>© 2025 ניהול קרנות השתלמות</p>
+    </footer>
+  );
+};
 
 export default App;
