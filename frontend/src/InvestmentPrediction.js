@@ -1,59 +1,93 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
-// Dummy data structure for Investment Prediction
-// Order: Fund Type -> Plan -> Company
-const dummyData = {
-  "קרנות השתלמות": {
-    plans: {
-      "תכנית 1": {
-        companies: ["חברה A", "חברה B"],
-        rates: { "שנה": 5, "3 שנים": 15, "5 שנים": 25 }
-      },
-      "תכנית 2": {
-        companies: ["חברה C"],
-        rates: { "שנה": 4, "3 שנים": 12, "5 שנים": 20 }
-      }
-    }
-  },
-  "קופות גמל": {
-    plans: {
-      "תכנית 3": {
-        companies: ["חברה D", "חברה E"],
-        rates: { "שנה": 6, "3 שנים": 18, "5 שנים": 30 }
-      },
-      "תכנית 4": {
-        companies: ["חברה F"],
-        rates: { "שנה": 7, "3 שנים": 21, "5 שנים": 35 }
-      }
-    }
+// Fade-in variant for animations
+const fadeInUp = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
+
+// In this version, we use real scraped data from our backend.
+// We assume that the JSON from /funds/ is already available and contains a "name" field.
+// For simplicity, we will filter by substring in the fund name.
+const getFilterSubstring = (fundType) => {
+  switch (fundType) {
+    case "קרנות השתלמות":
+      return "השתלמות";
+    case "קופות גמל":
+      return "גמל"; // excludes "להשקעה"
+    case "קופות גמל להשקעה":
+      return "להשקעה";
+    case "פוליסת חיסכון":
+      return "חיסכון";
+    case "קרן פנסיה":
+      return "פנסיה";
+    default:
+      return "";
   }
-  // ניתן להוסיף עוד סוגי קרנות במידת הצורך
 };
 
 const InvestmentPrediction = () => {
+  const [funds, setFunds] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Selections from user
   const [selectedFundType, setSelectedFundType] = useState("");
-  const [selectedPlan, setSelectedPlan] = useState("");
-  const [selectedCompany, setSelectedCompany] = useState("");
+  const [filteredFunds, setFilteredFunds] = useState([]);
+  const [selectedFund, setSelectedFund] = useState(null);
   const [amount, setAmount] = useState("");
   const [selectedPeriod, setSelectedPeriod] = useState("");
   const [result, setResult] = useState(null);
 
+  // Fetch funds data from backend on mount
+  useEffect(() => {
+    const fetchFunds = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch("http://localhost:8000/funds/");
+        const data = await response.json();
+        setFunds(data);
+      } catch (err) {
+        setError("Error loading data");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFunds();
+  }, []);
+
+  // Update filtered funds when selectedFundType or funds change
+  useEffect(() => {
+    if (selectedFundType) {
+      const filterStr = getFilterSubstring(selectedFundType);
+      const filtered = funds.filter((f) => f.name.includes(filterStr));
+      setFilteredFunds(filtered);
+    } else {
+      setFilteredFunds([]);
+    }
+    setSelectedFund(null);
+  }, [selectedFundType, funds]);
+
   const handleCalculate = () => {
-    if (!selectedFundType || !selectedPlan || !selectedCompany || !amount || !selectedPeriod) {
-      alert("אנא מלאו את כל השדות");
+    if (!selectedFund || !amount || !selectedPeriod) {
+      alert("Please fill in all fields");
       return;
     }
-    const rate = dummyData[selectedFundType].plans[selectedPlan].rates[selectedPeriod];
+    let rateStr = "";
+    if (selectedPeriod === "שנה") {
+      rateStr = selectedFund.last_year;
+    } else if (selectedPeriod === "3 שנים") {
+      rateStr = selectedFund.last_3_years;
+    } else if (selectedPeriod === "5 שנים") {
+      rateStr = selectedFund.last_5_years;
+    }
+    const rate = parseFloat(rateStr.replace("%", ""));
     const n = selectedPeriod === "שנה" ? 1 : selectedPeriod === "3 שנים" ? 3 : 5;
     // Compound interest formula: future value = amount * (1 + rate/100)^n
     const predicted = parseFloat(amount) * Math.pow(1 + rate / 100, n);
     setResult(predicted.toFixed(2));
   };
-
-  // Get plans and companies based on selection
-  const plans = selectedFundType ? Object.keys(dummyData[selectedFundType].plans) : [];
-  const companies = selectedPlan ? dummyData[selectedFundType].plans[selectedPlan].companies : [];
 
   return (
     <motion.div
@@ -69,57 +103,49 @@ const InvestmentPrediction = () => {
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6 } }}
       viewport={{ once: true }}
+      variants={fadeInUp}
     >
-      <h2>חיזוי השקעות</h2>
+      <h2>Investment Prediction</h2>
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <div style={{ marginBottom: "15px" }}>
-        <label>בחרו סוג קרן: </label>
+        <label>Select Fund Type: </label>
         <select
           value={selectedFundType}
-          onChange={(e) => {
-            setSelectedFundType(e.target.value);
-            setSelectedPlan("");
-            setSelectedCompany("");
-          }}
+          onChange={(e) => setSelectedFundType(e.target.value)}
         >
-          <option value="">-- בחרו סוג קרן --</option>
-          {Object.keys(dummyData).map((type) => (
+          <option value="">-- Select Fund Type --</option>
+          {[
+            "קרנות השתלמות",
+            "קופות גמל",
+            "קופות גמל להשקעה",
+            "פוליסת חיסכון",
+            "קרן פנסיה"
+          ].map((type) => (
             <option key={type} value={type}>{type}</option>
           ))}
         </select>
       </div>
       {selectedFundType && (
         <div style={{ marginBottom: "15px" }}>
-          <label>בחרו תכנית: </label>
+          <label>Select Fund (Plan): </label>
           <select
-            value={selectedPlan}
+            value={selectedFund ? selectedFund.id : ""}
             onChange={(e) => {
-              setSelectedPlan(e.target.value);
-              setSelectedCompany("");
+              const fundId = e.target.value;
+              const fund = filteredFunds.find((f) => f.id.toString() === fundId);
+              setSelectedFund(fund);
             }}
           >
-            <option value="">-- בחרו תכנית --</option>
-            {plans.map((plan) => (
-              <option key={plan} value={plan}>{plan}</option>
-            ))}
-          </select>
-        </div>
-      )}
-      {selectedPlan && (
-        <div style={{ marginBottom: "15px" }}>
-          <label>בחרו חברה: </label>
-          <select
-            value={selectedCompany}
-            onChange={(e) => setSelectedCompany(e.target.value)}
-          >
-            <option value="">-- בחרו חברה --</option>
-            {companies.map((comp) => (
-              <option key={comp} value={comp}>{comp}</option>
+            <option value="">-- Select Fund --</option>
+            {filteredFunds.map((f) => (
+              <option key={f.id} value={f.id}>{f.name}</option>
             ))}
           </select>
         </div>
       )}
       <div style={{ marginBottom: "15px" }}>
-        <label>הזינו סכום (בש"ח): </label>
+        <label>Enter Amount (in ₪): </label>
         <input
           type="number"
           value={amount}
@@ -127,12 +153,12 @@ const InvestmentPrediction = () => {
         />
       </div>
       <div style={{ marginBottom: "15px" }}>
-        <label>בחרו תקופה: </label>
+        <label>Select Period: </label>
         <select value={selectedPeriod} onChange={(e) => setSelectedPeriod(e.target.value)}>
-          <option value="">-- בחרו תקופה --</option>
-          <option value="שנה">שנה</option>
-          <option value="3 שנים">3 שנים</option>
-          <option value="5 שנים">5 שנים</option>
+          <option value="">-- Select Period --</option>
+          <option value="שנה">1 Year</option>
+          <option value="3 שנים">3 Years</option>
+          <option value="5 שנים">5 Years</option>
         </select>
       </div>
       <button
@@ -147,11 +173,11 @@ const InvestmentPrediction = () => {
         }}
         onClick={handleCalculate}
       >
-        חשב חיזוי
+        Calculate Prediction
       </button>
       {result && (
         <div style={{ marginTop: "20px", fontSize: "1.2rem", fontWeight: "bold" }}>
-          הערך הצפוי: {result} ש"ח
+          Predicted Value: {result} ₪
         </div>
       )}
     </motion.div>

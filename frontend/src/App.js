@@ -12,6 +12,7 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
+// Dummy product information for display on the Home page
 const PRODUCT_INFO = {
   "קרנות השתלמות": 
     "קרנות השתלמות הן כלי חיסכון לטווח בינוני שמאפשר הפקדות קבועות ומציע הטבות מס ניכרות. הן מתאימות לאנשים המחפשים לשמור על חיסכון נזיל אך בטוח, ובמקביל ליהנות מהטבות מס משמעותיות.\n\n" +
@@ -25,13 +26,13 @@ const PRODUCT_INFO = {
     "קופות גמל להשקעה מציעות גמישות ניהולית גבוהה יותר, ומאפשרות למשתמש לנהל את השקעותיו באופן דינמי תוך ניצול הטבות מס והזדמנויות צמיחה שונות. המוצר מתאים למשקיעים שמבינים את תחום ההשקעות ורוצים לשלב בין נזילות לבין סיכויי רווח מוגברים.\n\n" +
     "כלי זה מעניק שליטה רבה יותר על ניהול ההון ומאפשר התאמה אישית של אסטרטגיות השקעה בהתאם לשינויים בשוק.",
     
-  "פוליסות חיסכון": 
-    "פוליסות חיסכון הן מוצרים להשקעה בניהול אישי, המיועדים להבטיח חיסכון לטווח ארוך עם יתרונות מס ייחודיים. הן מציעות ניהול מותאם אישית ופתרונות כוללניים המשלבים ביטחון כלכלי עם גמישות בהשקעות.\n\n" +
+  "פוליסת חיסכון": 
+    "פוליסת חיסכון היא מוצר להשקעה בניהול אישי, המיועד להבטיח חיסכון לטווח ארוך עם יתרונות מס ייחודיים. היא מציעה ניהול מותאם אישית ופתרונות כוללניים המשלבים ביטחון כלכלי עם גמישות בהשקעות.\n\n" +
     "המוצר מתאים לאלו המחפשים פתרון מקיף לחיסכון, המאפשר לשלב בין ביטחון כלכלי לבין הזדמנויות לצמיחה והשקעה.",
     
-  "קרנות פנסיה": 
-    "קרנות פנסיה הן כלי לחיסכון לפרישה, המציעות קצבה חודשית וביטחון כלכלי לעת הפרישה. הן נועדו להבטיח עתיד כלכלי יציב באמצעות ניהול מקצועי של ההשקעות, תוך שימת דגש על יציבות וביטחון.\n\n" +
-    "השקעה בקרנות פנסיה מומלצת למי שמעוניין לתכנן את העתיד הכלכלי בצורה מסודרת, עם יתרונות ביטוחיים והטבות מס משמעותיות."
+  "קרן פנסיה": 
+    "קרן פנסיה היא כלי לחיסכון לפרישה, המציעה קצבה חודשית וביטחון כלכלי לעת הפרישה. היא נועדה להבטיח עתיד כלכלי יציב באמצעות ניהול מקצועי של ההשקעות, תוך שימת דגש על יציבות וביטחון.\n\n" +
+    "השקעה בקרן פנסיה מומלצת למי שמעוניין לתכנן את העתיד הכלכלי בצורה מסודרת, עם יתרונות ביטוחיים והטבות מס משמעותיות."
 };
 
 function App() {
@@ -127,6 +128,7 @@ function App() {
 }
 
 const Home = () => {
+  // Parallax effects for images
   const { scrollY } = useViewportScroll();
   const yImage1 = useTransform(scrollY, [0, 300], [0, -50]);
   const yImage2 = useTransform(scrollY, [0, 300], [0, -30]);
@@ -140,27 +142,27 @@ const Home = () => {
     >
       <motion.h1 
         style={{ marginBottom: "20px" }}
-        variants={fadeInUp} 
-        initial="hidden" 
-        whileInView="visible" 
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
         viewport={{ once: true }}
       >
         ברוכים הבאים ל-AllFunds!
       </motion.h1>
       <motion.p 
         style={{ marginBottom: "20px", fontSize: "1.1rem" }}
-        variants={fadeInUp} 
-        initial="hidden" 
-        whileInView="visible" 
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
         viewport={{ once: true }}
       >
         AllFunds הוא הפורטל המקצועי והמוביל בתחום מוצרי הקרנות, המקום שבו תוכלו לקבל את כל המידע העדכני, המעמיק והמקצועי שיעזור לכם לקבל את החלטות ההשקעה הנכונות.
       </motion.p>
       <motion.p 
         style={{ marginBottom: "20px", fontSize: "1.1rem" }}
-        variants={fadeInUp} 
-        initial="hidden" 
-        whileInView="visible" 
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
         viewport={{ once: true }}
       >
         אנו כאן כדי להוות עבורכם את היועץ האישי והאמין – עם ניסיון של שנים בתחום, אנו מציגים ניתוחים כלכליים מעמיקים, המלצות מקצועיות, כתבות איכותיות וכלים מתקדמים להשוואת מוצרים פיננסיים.
@@ -182,9 +184,9 @@ const Home = () => {
       />
       <motion.p 
         style={{ marginBottom: "20px", fontSize: "1.1rem" }}
-        variants={fadeInUp} 
-        initial="hidden" 
-        whileInView="visible" 
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
         viewport={{ once: true }}
       >
         באתר זה תמצאו מידע מפורט על קרנות השתלמות, קופות גמל, פוליסות חיסכון וקרנות פנסיה – כל זאת כדי לאפשר לכם להבין את היתרונות של כל מוצר, להשוות בין אפשרויות ולהגיע להחלטות מושכלות.
@@ -206,9 +208,9 @@ const Home = () => {
       />
       <motion.p 
         style={{ marginBottom: "20px", fontSize: "1.1rem" }}
-        variants={fadeInUp} 
-        initial="hidden" 
-        whileInView="visible" 
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
         viewport={{ once: true }}
       >
         כל החומרים, הנתונים והכלים שאנו מספקים נועדו לתת לכם את ההיתרון בשוק ההשקעות. אנחנו כאן כדי להיות השותף האישי שלכם להצלחה – כי כשמדובר בהשקעות, כל פרט חשוב.
@@ -353,7 +355,7 @@ const Comparison = () => {
             width: "45%",
             borderRadius: "10px",
             objectFit: "cover",
-            objectPosition: "90%" // shifted further to the right
+            objectPosition: "90%" // shift further to the right as requested
           }}
           variants={fadeInUp}
           initial="hidden"

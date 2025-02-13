@@ -20,7 +20,6 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  /* Footer will appear after the content */
 }
 
 /* Main Content */
@@ -33,7 +32,7 @@ body {
 /* Navigation Bar */
 .navbar {
   display: flex;
-  justify-content: space-between; /* Distribute nav items evenly */
+  justify-content: space-between;
   align-items: center;
   background: rgba(0, 123, 255, 0.15);
   padding: 15px 20px;
