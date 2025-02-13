@@ -2,8 +2,14 @@ import React, { useState } from "react";
 import { getFundsByProduct } from "./services/backend";
 import "./App.css";
 import FinancialProduct from "./FinancialProduct";
-import { motion } from "framer-motion";
+import { motion, useViewportScroll, useTransform } from "framer-motion";
 import { FaHome, FaChartLine, FaCoins } from "react-icons/fa";
+
+// Fade-in up variant for smooth transitions & scroll reveal
+const fadeInUp = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
 
 const PRODUCT_INFO = {
   "קרנות השתלמות": 
@@ -51,13 +57,34 @@ function App() {
     <div className="app-container">
       <header className="navbar">
         {/* In RTL: "בית" on the right, "רשימת קרנות" in the center, "השוואה" on the left */}
-        <motion.button className="nav-button" onClick={() => setActiveTab("home")} whileHover={{ scale: 1.15 }}>
+        <motion.button 
+          className="nav-button" 
+          onClick={() => setActiveTab("home")} 
+          whileHover={{ scale: 1.15 }}
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+        >
           <FaHome /> בית
         </motion.button>
-        <motion.button className="nav-button" onClick={() => setActiveTab("funds")} whileHover={{ scale: 1.15 }}>
+        <motion.button 
+          className="nav-button" 
+          onClick={() => setActiveTab("funds")} 
+          whileHover={{ scale: 1.15 }}
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+        >
           <FaCoins /> רשימת קרנות
         </motion.button>
-        <motion.button className="nav-button" onClick={() => setActiveTab("comparison")} whileHover={{ scale: 1.15 }}>
+        <motion.button 
+          className="nav-button" 
+          onClick={() => setActiveTab("comparison")} 
+          whileHover={{ scale: 1.15 }}
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+        >
           <FaChartLine /> השוואה
         </motion.button>
       </header>
@@ -68,16 +95,20 @@ function App() {
             {/* Product type buttons */}
             <div className="product-buttons">
               {Object.keys(PRODUCT_INFO).map((product) => (
-                <button
+                <motion.button
                   key={product}
                   className="info-button"
                   onClick={() => {
                     setSelectedProduct(product);
                     fetchFundsByProduct(product);
                   }}
+                  variants={fadeInUp}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
                 >
                   {product}
-                </button>
+                </motion.button>
               ))}
             </div>
             {/* Display selected product general info */}
@@ -97,41 +128,104 @@ function App() {
   );
 }
 
-const Home = () => (
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ duration: 1 }}
-    style={{ padding: "30px", lineHeight: "2", textAlign: "center" }}
-  >
-    <h1 style={{ marginBottom: "20px" }}>ברוכים הבאים ל-AllFunds!</h1>
-    <p style={{ marginBottom: "20px", fontSize: "1.1rem" }}>
-      AllFunds הוא הפורטל המקצועי והמוביל בתחום מוצרי הקרנות, המקום שבו תוכלו לקבל את כל המידע העדכני, המעמיק והמקצועי שיעזור לכם לקבל את החלטות ההשקעה הנכונות.
-    </p>
-    <p style={{ marginBottom: "20px", fontSize: "1.1rem" }}>
-      אנו כאן כדי להוות עבורכם את היועץ האישי והאמין – עם ניסיון של שנים בתחום, אנו מציגים ניתוחים כלכליים מעמיקים, המלצות מקצועיות, כתבות איכותיות וכלים מתקדמים להשוואת מוצרים פיננסיים.
-    </p>
-    <img
-      src="https://psychology.iresearchnet.com/wp-content/uploads/2016/01/Expertise.png"
-      alt="AllFunds Expertise"
-      style={{ width: "80%", margin: "30px auto", display: "block", borderRadius: "10px" }}
-    />
-    <p style={{ marginBottom: "20px", fontSize: "1.1rem" }}>
-      באתר זה תמצאו מידע מפורט על קרנות השתלמות, קופות גמל, פוליסות חיסכון וקרנות פנסיה – כל זאת כדי לאפשר לכם להבין את היתרונות של כל מוצר, להשוות בין אפשרויות ולהגיע להחלטות מושכלות.
-    </p>
-    <p style={{ marginBottom: "20px", fontSize: "1.1rem" }}>
-      אנו מאמינים שהידע הוא הכוח, וכל משקיע זכאי לקבל גישה לנתונים אמינים ומקיפים. בחרו ב-AllFunds והצטרפו למסע כלכלי מרתק, שבו המקצועיות והאמינות שלנו יהפכו את הבחירה שלכם להשקעה הטובה ביותר.
-    </p>
-    <img
-      src="https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      alt="Invest with Confidence"
-      style={{ width: "80%", margin: "30px auto", display: "block", borderRadius: "10px" }}
-    />
-    <p style={{ marginBottom: "20px", fontSize: "1.1rem" }}>
-      כל החומרים, הנתונים והכלים שאנו מספקים נועדו לתת לכם את ההיתרון בשוק ההשקעות. אנחנו כאן כדי להיות השותף האישי שלכם להצלחה – כי כשמדובר בהשקעות, כל פרט חשוב.
-    </p>
-  </motion.div>
-);
+const Home = () => {
+  const { scrollY } = useViewportScroll();
+  const yImage1 = useTransform(scrollY, [0, 300], [0, -50]);
+  const yImage2 = useTransform(scrollY, [0, 300], [0, -30]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      style={{ padding: "30px", lineHeight: "2", textAlign: "center" }}
+    >
+      <motion.h1 
+        style={{ marginBottom: "20px" }}
+        variants={fadeInUp} 
+        initial="hidden" 
+        whileInView="visible" 
+        viewport={{ once: true }}
+      >
+        ברוכים הבאים ל-AllFunds!
+      </motion.h1>
+      <motion.p 
+        style={{ marginBottom: "20px", fontSize: "1.1rem" }}
+        variants={fadeInUp} 
+        initial="hidden" 
+        whileInView="visible" 
+        viewport={{ once: true }}
+      >
+        AllFunds הוא הפורטל המקצועי והמוביל בתחום מוצרי הקרנות, המקום שבו תוכלו לקבל את כל המידע העדכני, המעמיק והמקצועי שיעזור לכם לקבל את החלטות ההשקעה הנכונות.
+      </motion.p>
+      <motion.p 
+        style={{ marginBottom: "20px", fontSize: "1.1rem" }}
+        variants={fadeInUp} 
+        initial="hidden" 
+        whileInView="visible" 
+        viewport={{ once: true }}
+      >
+        אנו כאן כדי להוות עבורכם את היועץ האישי והאמין – עם ניסיון של שנים בתחום, אנו מציגים ניתוחים כלכליים מעמיקים, המלצות מקצועיות, כתבות איכותיות וכלים מתקדמים להשוואת מוצרים פיננסיים.
+      </motion.p>
+      <motion.img
+        src="https://psychology.iresearchnet.com/wp-content/uploads/2016/01/Expertise.png"
+        alt="AllFunds Expertise"
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        style={{ width: "80%", margin: "30px auto", display: "block", borderRadius: "10px", y: yImage1 }}
+      />
+      <motion.p 
+        style={{ marginBottom: "20px", fontSize: "1.1rem" }}
+        variants={fadeInUp} 
+        initial="hidden" 
+        whileInView="visible" 
+        viewport={{ once: true }}
+      >
+        באתר זה תמצאו מידע מפורט על קרנות השתלמות, קופות גמל, פוליסות חיסכון וקרנות פנסיה – כל זאת כדי לאפשר לכם להבין את היתרונות של כל מוצר, להשוות בין אפשרויות ולהגיע להחלטות מושכלות.
+      </motion.p>
+      <motion.img
+        src="https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3"
+        alt="Invest with Confidence"
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        style={{ width: "80%", margin: "30px auto", display: "block", borderRadius: "10px", y: yImage2 }}
+      />
+      <motion.p 
+        style={{ marginBottom: "20px", fontSize: "1.1rem" }}
+        variants={fadeInUp} 
+        initial="hidden" 
+        whileInView="visible" 
+        viewport={{ once: true }}
+      >
+        כל החומרים, הנתונים והכלים שאנו מספקים נועדו לתת לכם את ההיתרון בשוק ההשקעות. אנחנו כאן כדי להיות השותף האישי שלכם להצלחה – כי כשמדובר בהשקעות, כל פרט חשוב.
+      </motion.p>
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        style={{
+          background: "linear-gradient(135deg, #007bff, #0056b3)",
+          color: "#fff",
+          border: "none",
+          padding: "15px 30px",
+          borderRadius: "8px",
+          fontSize: "1.1rem",
+          cursor: "pointer",
+          marginTop: "30px"
+        }}
+        onClick={() => alert("תודה שבחרתם ב-AllFunds!")}
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        הצטרפו עכשיו
+      </motion.button>
+    </motion.div>
+  );
+};
 
 const FundsList = ({ funds, error, loading }) => {
   if (loading) return <p style={{ textAlign: "center" }}>טוען...</p>;
@@ -139,10 +233,14 @@ const FundsList = ({ funds, error, loading }) => {
   if (!funds || (Array.isArray(funds) && funds.length === 0))
     return <p style={{ textAlign: "center" }}>אין נתונים להצגה</p>;
 
-  // If funds is an array, display one table
   if (Array.isArray(funds)) {
     return (
-      <div>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={fadeInUp}
+      >
         <h2 style={{ textAlign: "center", marginTop: "40px" }}>רשימת קרנות</h2>
         <table style={{ margin: "0 auto", borderCollapse: "collapse", width: "80%" }}>
           <thead>
@@ -166,15 +264,21 @@ const FundsList = ({ funds, error, loading }) => {
             ))}
           </tbody>
         </table>
-      </div>
+      </motion.div>
     );
   } else if (typeof funds === "object") {
-    // If funds is an object, assume keys are category names (tracks) and values are arrays of funds
     return (
       <div>
         <h2 style={{ textAlign: "center", marginTop: "40px" }}>רשימת קרנות</h2>
         {Object.keys(funds).map((category) => (
-          <div key={category} style={{ marginBottom: "40px" }}>
+          <motion.div
+            key={category}
+            style={{ marginBottom: "40px" }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+          >
             <h3 style={{ textAlign: "center", marginBottom: "10px" }}>מסלול: {category}</h3>
             <p style={{ textAlign: "center", marginBottom: "15px" }}>
               במסלול זה מוצגים נתונים לפי ביצועים חודשיים, שנתיים, ל-3 שנים ול-5 שנים. אנא עיינו בנתונים בעיון.
@@ -201,7 +305,7 @@ const FundsList = ({ funds, error, loading }) => {
                 ))}
               </tbody>
             </table>
-          </div>
+          </motion.div>
         ))}
       </div>
     );
@@ -212,7 +316,13 @@ const FundsList = ({ funds, error, loading }) => {
 
 const Comparison = () => {
   return (
-    <div style={{ padding: "30px", lineHeight: "2", textAlign: "center" }}>
+    <motion.div
+      style={{ padding: "30px", lineHeight: "2", textAlign: "center" }}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={fadeInUp}
+    >
       <h2>השוואה</h2>
       <p>
         כאן יופיעו נתונים והשוואות בין מוצרים פיננסיים שונים, כך שתוכלו לראות באופן ברור את היתרונות והחסרונות של כל מוצר. אנחנו עובדים כל העת לעדכן ולהציג נתונים אמינים ומקיפים, כדי שתוכלו לקבל את ההחלטות הנכונות.
@@ -226,18 +336,31 @@ const Comparison = () => {
           flexWrap: "wrap"
         }}
       >
-        <img
+        <motion.img
           src="https://plus.unsplash.com/premium_photo-1683133438751-abb68a5c2270?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Comparison Image 1"
-          style={{ width: "45%", borderRadius: "10px" }}
+          style={{
+            width: "45%",
+            borderRadius: "10px",
+            objectFit: "cover",
+            objectPosition: "80%" // shifting cropping further to the right
+          }}
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
         />
-        <img
+        <motion.img
           src="https://images.unsplash.com/photo-1464374288807-174911d4adb9?q=80&w=990&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Comparison Image 2"
           style={{ width: "45%", borderRadius: "10px" }}
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
         />
       </div>
-    </div>
+    </motion.div>
   );
 };
 
