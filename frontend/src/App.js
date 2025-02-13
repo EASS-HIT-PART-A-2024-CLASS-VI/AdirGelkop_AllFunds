@@ -80,7 +80,7 @@ function App() {
                 </button>
               ))}
             </div>
-            {/* Display selected product information */}
+            {/* Display selected product general info */}
             {selectedProduct && (
               <FinancialProduct
                 title={selectedProduct}
@@ -98,27 +98,52 @@ function App() {
 }
 
 const Home = () => (
-  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-    <h1>ברוכים הבאים לפורטל קרנות ההשקעה!</h1>
-    <p>
-      ברוכים הבאים לאתר המוביל בתחום מוצרי הקרנות – המקום בו תמצאו את כל המידע העדכני, המעמיק והמקצועי בעולם ההשקעות. האתר שלנו נבנה כדי לספק לכם גישה לניתוחים כלכליים מפורטים, כתבות מעמיקות וכלים מתקדמים להשוואת מוצרים פיננסיים.
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 1 }}
+    style={{ padding: "30px", lineHeight: "2", textAlign: "center" }}
+  >
+    <h1 style={{ marginBottom: "20px" }}>ברוכים הבאים ל-AllFunds!</h1>
+    <p style={{ marginBottom: "20px", fontSize: "1.1rem" }}>
+      AllFunds הוא הפורטל המקצועי והמוביל בתחום מוצרי הקרנות, המקום שבו תוכלו לקבל את כל המידע העדכני, המעמיק והמקצועי שיעזור לכם לקבל את החלטות ההשקעה הנכונות.
     </p>
-    <p>
-      באמצעות המאמרים והניתוחים שלנו, תוכלו להבין את היתרונות של כל מוצר השקעה – בין אם מדובר בקרנות השתלמות, קופות גמל, פוליסות חיסכון או קרנות פנסיה. אנו מתמקדים במתן מידע אמין ומקיף, שמאפשר לכם לקבל החלטות השקעה מושכלות.
+    <p style={{ marginBottom: "20px", fontSize: "1.1rem" }}>
+      אנו כאן כדי להוות עבורכם את היועץ האישי והאמין – עם ניסיון של שנים בתחום, אנו מציגים ניתוחים כלכליים מעמיקים, המלצות מקצועיות, כתבות איכותיות וכלים מתקדמים להשוואת מוצרים פיננסיים.
     </p>
-    <p>
-      הצטרפו אלינו למסע כלכלי מרתק, למדו איך לנתח שווקים, והשקיעו בצורה חכמה שתקדם את העתיד הכלכלי שלכם.
+    <img
+      src="https://psychology.iresearchnet.com/wp-content/uploads/2016/01/Expertise.png"
+      alt="AllFunds Expertise"
+      style={{ width: "80%", margin: "30px auto", display: "block", borderRadius: "10px" }}
+    />
+    <p style={{ marginBottom: "20px", fontSize: "1.1rem" }}>
+      באתר זה תמצאו מידע מפורט על קרנות השתלמות, קופות גמל, פוליסות חיסכון וקרנות פנסיה – כל זאת כדי לאפשר לכם להבין את היתרונות של כל מוצר, להשוות בין אפשרויות ולהגיע להחלטות מושכלות.
+    </p>
+    <p style={{ marginBottom: "20px", fontSize: "1.1rem" }}>
+      אנו מאמינים שהידע הוא הכוח, וכל משקיע זכאי לקבל גישה לנתונים אמינים ומקיפים. בחרו ב-AllFunds והצטרפו למסע כלכלי מרתק, שבו המקצועיות והאמינות שלנו יהפכו את הבחירה שלכם להשקעה הטובה ביותר.
+    </p>
+    <img
+      src="https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      alt="Invest with Confidence"
+      style={{ width: "80%", margin: "30px auto", display: "block", borderRadius: "10px" }}
+    />
+    <p style={{ marginBottom: "20px", fontSize: "1.1rem" }}>
+      כל החומרים, הנתונים והכלים שאנו מספקים נועדו לתת לכם את ההיתרון בשוק ההשקעות. אנחנו כאן כדי להיות השותף האישי שלכם להצלחה – כי כשמדובר בהשקעות, כל פרט חשוב.
     </p>
   </motion.div>
 );
 
 const FundsList = ({ funds, error, loading }) => {
-  return (
-    <div>
-      <h2 style={{ textAlign: "center" }}>רשימת קרנות</h2>
-      {loading && <p style={{ textAlign: "center" }}>טוען...</p>}
-      {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
-      {funds && funds.length > 0 ? (
+  if (loading) return <p style={{ textAlign: "center" }}>טוען...</p>;
+  if (error) return <p style={{ color: "red", textAlign: "center" }}>{error}</p>;
+  if (!funds || (Array.isArray(funds) && funds.length === 0))
+    return <p style={{ textAlign: "center" }}>אין נתונים להצגה</p>;
+
+  // If funds is an array, display one table
+  if (Array.isArray(funds)) {
+    return (
+      <div>
+        <h2 style={{ textAlign: "center", marginTop: "40px" }}>רשימת קרנות</h2>
         <table style={{ margin: "0 auto", borderCollapse: "collapse", width: "80%" }}>
           <thead>
             <tr>
@@ -141,21 +166,81 @@ const FundsList = ({ funds, error, loading }) => {
             ))}
           </tbody>
         </table>
-      ) : (
-        !loading && <p style={{ textAlign: "center" }}>אין נתונים להצגה</p>
-      )}
-    </div>
-  );
+      </div>
+    );
+  } else if (typeof funds === "object") {
+    // If funds is an object, assume keys are category names (tracks) and values are arrays of funds
+    return (
+      <div>
+        <h2 style={{ textAlign: "center", marginTop: "40px" }}>רשימת קרנות</h2>
+        {Object.keys(funds).map((category) => (
+          <div key={category} style={{ marginBottom: "40px" }}>
+            <h3 style={{ textAlign: "center", marginBottom: "10px" }}>מסלול: {category}</h3>
+            <p style={{ textAlign: "center", marginBottom: "15px" }}>
+              במסלול זה מוצגים נתונים לפי ביצועים חודשיים, שנתיים, ל-3 שנים ול-5 שנים. אנא עיינו בנתונים בעיון.
+            </p>
+            <table style={{ margin: "0 auto", borderCollapse: "collapse", width: "80%" }}>
+              <thead>
+                <tr>
+                  <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f2f2f2" }}>שם</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f2f2f2" }}>חודש</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f2f2f2" }}>שנה</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f2f2f2" }}>3 שנים</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px", backgroundColor: "#f2f2f2" }}>5 שנים</th>
+                </tr>
+              </thead>
+              <tbody>
+                {funds[category].map((fund) => (
+                  <tr key={fund.id}>
+                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>{fund.name}</td>
+                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>{fund.month_performance}</td>
+                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>{fund.last_year}</td>
+                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>{fund.last_3_years}</td>
+                    <td style={{ border: "1px solid #ddd", padding: "8px" }}>{fund.last_5_years}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
+      </div>
+    );
+  } else {
+    return null;
+  }
 };
 
 const Comparison = () => {
   return (
-    <div>
+    <div style={{ padding: "30px", lineHeight: "2", textAlign: "center" }}>
       <h2>השוואה</h2>
-      <p>תוכן השוואה יופיע כאן.</p>
+      <p>
+        כאן יופיעו נתונים והשוואות בין מוצרים פיננסיים שונים, כך שתוכלו לראות באופן ברור את היתרונות והחסרונות של כל מוצר. אנחנו עובדים כל העת לעדכן ולהציג נתונים אמינים ומקיפים, כדי שתוכלו לקבל את ההחלטות הנכונות.
+      </p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "20px",
+          margin: "30px auto",
+          flexWrap: "wrap"
+        }}
+      >
+        <img
+          src="https://plus.unsplash.com/premium_photo-1683133438751-abb68a5c2270?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Comparison Image 1"
+          style={{ width: "45%", borderRadius: "10px" }}
+        />
+        <img
+          src="https://images.unsplash.com/photo-1464374288807-174911d4adb9?q=80&w=990&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Comparison Image 2"
+          style={{ width: "45%", borderRadius: "10px" }}
+        />
+      </div>
     </div>
   );
 };
+
 
 const Footer = () => {
   return (

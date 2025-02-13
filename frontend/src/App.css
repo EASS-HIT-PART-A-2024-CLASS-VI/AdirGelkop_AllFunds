@@ -20,7 +20,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  height: 100vh;
+  /* Footer will appear after the content */
 }
 
 /* Main Content */
@@ -121,7 +121,7 @@ table th {
   line-height: 1.6;
 }
 
-/* Footer Styling */
+/* Footer Styling - Not fixed, appears after content */
 .footer {
   text-align: center;
   background-color: rgba(0, 123, 255, 0.9);
@@ -129,9 +129,8 @@ table th {
   padding: 15px;
   font-size: 1rem;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
-  position: fixed;
-  bottom: 0;
   width: 100%;
+  margin-top: 20px;
 }
 
 .footer a {

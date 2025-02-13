@@ -3,23 +3,22 @@ version: "3.8"
 services:
   backend:
     build:
-      context: ./backend  # Context points to the 'backend' folder
+      context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"  # Expose backend on port 8000
+      - "8000:8000"
     volumes:
-      - ./backend:/app  # Mount the backend folder for live updates
+      - ./backend:/app
     environment:
-      - PYTHONUNBUFFERED=1  # Disable Python buffering for better logs
+      - PYTHONUNBUFFERED=1
 
   frontend:
     build:
-      context: ./frontend  # Context points to the 'frontend' folder
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"  # Expose frontend on port 3000
-    stdin_open: true  # Keep container interactive
-    tty: true  # Keep container running
-#    volumes:
-#      - ./frontend:/app  # Mount the frontend folder for live updates
-#      - /app/node_modules  # Prevent volume overwrite issues with node_modules
+      - "3000:3000"
+    environment:
+      - CI=true
+    stdin_open: true
+    tty: true
