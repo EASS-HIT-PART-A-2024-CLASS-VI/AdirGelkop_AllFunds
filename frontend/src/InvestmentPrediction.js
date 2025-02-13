@@ -17,7 +17,7 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
-// Using real data from backend scraped funds (filter by substring based on fund type)
+// Filter substring based on fund type (using real scraped data)
 const getFilterSubstring = (fundType) => {
   switch (fundType) {
     case "קרנות השתלמות":
@@ -26,9 +26,9 @@ const getFilterSubstring = (fundType) => {
       return "גמל";
     case "קופות גמל להשקעה":
       return "להשקעה";
-    case "פוליסת חיסכון":
+    case "פוליסות חיסכון":
       return "חיסכון";
-    case "קרן פנסיה":
+    case "קרנות פנסיה":
       return "פנסיה";
     default:
       return "";
@@ -101,7 +101,7 @@ const InvestmentPrediction = () => {
     let data = [];
     for (let i = 0; i <= n; i++) {
       const value = parseFloat(amount) * Math.pow(1 + rate / 100, i);
-      data.push({ שנה: i, ערך: parseFloat(value.toFixed(2)) });
+      data.push({ שנה: i, "ערך (בשקלים חדשים)": parseFloat(value.toFixed(2)) });
     }
     setChartData(data);
   };
@@ -136,8 +136,8 @@ const InvestmentPrediction = () => {
             "קרנות השתלמות",
             "קופות גמל",
             "קופות גמל להשקעה",
-            "פוליסת חיסכון",
-            "קרן פנסיה"
+            "פוליסות חיסכון",
+            "קרנות פנסיה"
           ].map((type) => (
             <option key={type} value={type}>{type}</option>
           ))}
@@ -194,19 +194,26 @@ const InvestmentPrediction = () => {
       </button>
       {result && (
         <div style={{ marginTop: "20px", fontSize: "1.2rem", fontWeight: "bold" }}>
-          הערך הצפוי: {result} ש"ח
+          הערך הצפוי: {result} שקלים חדשים
         </div>
       )}
       {chartData.length > 0 && (
         <div style={{ marginTop: "30px", height: "300px" }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="שנה" label={{ value: "שנים", position: "insideBottom", offset: -5 }} />
-              <YAxis label={{ value: "ערך (בשקלים חדשים)", angle: -90, position: "insideLeft" }} />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="ערך" stroke="#8884d8" activeDot={{ r: 8 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+              <XAxis 
+                dataKey="שנה" 
+                tick={{ fill: "#fff" }} 
+                label={{ value: "שנים", position: "insideBottom", offset: -5, fill: "#fff" }} 
+              />
+              <YAxis 
+                tick={{ fill: "#fff" }} 
+                label={{ value: "ערך (בשקלים חדשים)", angle: -90, position: "insideLeft", fill: "#fff" }} 
+              />
+              <Tooltip contentStyle={{ backgroundColor: "#222", border: "none", color: "#fff" }} />
+              <Legend wrapperStyle={{ color: "#fff" }} />
+              <Line type="monotone" dataKey="ערך (בשקלים חדשים)" stroke="#ff7300" strokeWidth={3} activeDot={{ r: 8 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
