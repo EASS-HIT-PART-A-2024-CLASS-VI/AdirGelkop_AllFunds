@@ -1,11 +1,28 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException, Request
 from pydantic import BaseModel
 from typing import List
 import requests
 from bs4 import BeautifulSoup
 import datetime
+import os
+import openai
+# Import transformer pipeline for the free RAG Agent solution
+from transformers import pipeline
+import torch
 
 router = APIRouter()
+
+# Initialize the transformer pipeline (using distilgpt2 as a demo model)
+try:
+    chatbot = pipeline(
+        "text-generation",
+        model="distilgpt2",
+        tokenizer="distilgpt2",
+        device=0 if torch.cuda.is_available() else -1  # use GPU if available
+    )
+except Exception as init_error:
+    print("Error initializing chatbot:", init_error)
+    chatbot = None
 
 # Data model for fund details
 class Fund(BaseModel):
@@ -16,7 +33,7 @@ class Fund(BaseModel):
     last_3_years: str
     last_5_years: str
 
-# Helper function to get the month name two months ago
+# Helper function to get the Hebrew name of the month two months ago
 def get_month_name_two_months_ago():
     hebrew_months = {
         "January": "ינואר",
@@ -37,15 +54,13 @@ def get_month_name_two_months_ago():
     month_name = two_months_ago.strftime("%B")
     return hebrew_months.get(month_name, month_name)
 
-# Scraping function: fetches and parses fund data
+# Scraping function: fetches and parses fund data from the given URL
 def scrape_funds(url: str):
     response = requests.get(url)
     if response.status_code != 200:
         raise Exception(f"Failed to fetch data from {url}: {response.status_code}")
-
     soup = BeautifulSoup(response.content, "html.parser")
     month_name = get_month_name_two_months_ago()
-
     funds = []
     rows = soup.find_all("tr")  # Adjust selector as needed
     for i, row in enumerate(rows[1:], start=1):  # Skip table header
@@ -61,7 +76,7 @@ def scrape_funds(url: str):
             })
     return funds
 
-# Updated endpoint to support product_type parameter
+# Endpoint to fetch funds based on product_type parameter
 @router.get("/funds/", response_model=List[Fund])
 def get_funds(product_type: str = Query("קרנות השתלמות")):
     PRODUCT_URLS = {
@@ -95,3 +110,30 @@ def filter_funds(company: str = None, product_type: str = None):
     if product_type:
         funds = [fund for fund in funds if product_type in fund['name']]
     return funds
+
+# New /chat endpoint for the RAG Agent (Economic Advisor) using a free transformer model
+@router.post("/chat")
+async def chat_endpoint(request: Request):
+    data = await request.json()
+    user_message = data.get("message", "")
+    if not user_message:
+        raise HTTPException(status_code=400, detail="No message provided")
+    
+    # Prepare prompt for economic advice in Hebrew
+    prompt = (
+        "אתה יועץ כלכלי מומחה בתחום פתרונות קרנות. "
+        "ענה בצורה מקצועית ומפורטת על השאלה הבאה בעברית, והכלל בסיום דיסקליימר שהמידע הוא לצורך מידע בלבד ואינו מהווה המלצה פיננסית:\n\n"
+        f"משתמש: {user_message}\n"
+        "יועץ:"
+    )
+    
+    try:
+        response = chatbot(prompt, max_length=150, do_sample=True, temperature=0.7)
+        generated_text = response[0]["generated_text"]
+        # Remove the prompt from the generated text if present
+        answer = generated_text.replace(prompt, "").strip()
+        if not answer:
+            answer = "סליחה, לא הצלחתי לקבל תשובה מהמערכת. אנא נסה שוב."
+        return {"response": answer}
+    except Exception as e:
+        return {"response": f"מצטער, אירעה שגיאה: {str(e)}. (זוהי תשובה דמה)"}

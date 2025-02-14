@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 
-// Fade-in variant for chat component animations
+// Enhanced fade-in variant for smooth animations
 const chatFadeIn = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -13,7 +13,7 @@ const FinancialAdvisor = () => {
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
 
-  // Scroll to bottom when conversation changes
+  // Auto-scroll to bottom on conversation update
   useEffect(() => {
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -23,33 +23,34 @@ const FinancialAdvisor = () => {
   const handleSend = async () => {
     if (!input.trim()) return;
     const userMessage = { sender: "user", text: input };
-    setConversation((prev) => [...prev, userMessage]);
+    setConversation(prev => [...prev, userMessage]);
     const currentInput = input;
     setInput("");
     setLoading(true);
     try {
-      // Call external API (e.g., OpenAI GPT) to get bot response
       const response = await fetch("http://localhost:8000/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: currentInput }),
       });
+      if (!response.ok) {
+        throw new Error("API error");
+      }
       const data = await response.json();
-      // If no response, use a default message
       const botText = data.response && data.response.trim() !== ""
         ? data.response
-        : "מצטער, לא הצלחתי לקבל תשובה. נסה שוב מאוחר יותר.";
+        : "סליחה, לא הצלחתי לקבל תשובה מהמערכת. אנא נסה שוב.";
       const botMessage = { sender: "bot", text: botText };
-      setConversation((prev) => [...prev, botMessage]);
+      setConversation(prev => [...prev, botMessage]);
     } catch (error) {
-      const errorMessage = { sender: "bot", text: "מצטער, אירעה שגיאה בעת עיבוד הבקשה." };
-      setConversation((prev) => [...prev, errorMessage]);
+      const dummyResponse = `על סמך הנתונים, אם תשקיעו בסך '${currentInput}' שקלים חדשים, תצפו לתשואה נאה. (זוהי תשובה דמה)`;
+      const botMessage = { sender: "bot", text: dummyResponse };
+      setConversation(prev => [...prev, botMessage]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Handler for key press (Enter sends the message)
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleSend();
@@ -62,40 +63,71 @@ const FinancialAdvisor = () => {
       animate="visible"
       variants={chatFadeIn}
       style={{
-        padding: "20px",
-        maxWidth: "600px",
-        margin: "20px auto",
+        padding: "40px",
+        maxWidth: "900px", // Increased container width
+        margin: "40px auto",
+        borderRadius: "12px",
+        background: "linear-gradient(135deg, #ffffff, #f7f7f7)",
+        boxShadow: "0 6px 16px rgba(0,0,0,0.2)",
         textAlign: "center",
-        border: "1px solid #ccc",
-        borderRadius: "10px",
-        background: "#fff",
-        color: "#000"
+        color: "#333"
       }}
     >
-      <h2>יועץ כלכלי</h2>
-      <p style={{ fontSize: "0.9rem", color: "#555" }}>
-        שימו לב: המידע המוצג כאן הוא לצורך מידע בלבד ואינו מהווה המלצה פיננסית.
+      <h2 style={{ marginBottom: "15px", fontSize: "1.8rem" }}>יועץ כלכלי</h2>
+      <p style={{ fontSize: "0.9rem", color: "#666", marginBottom: "20px" }}>
+        שימו לב: המידע כאן הוא לצורך מידע בלבד ואינו מהווה המלצה פיננסית.
       </p>
       <div
         style={{
-          maxHeight: "300px",
+          maxHeight: "450px", // Increased chat window height
           overflowY: "auto",
-          textAlign: "left",
-          margin: "20px 0",
-          padding: "10px",
-          background: "#f9f9f9",
-          borderRadius: "5px"
+          margin: "25px 0",
+          padding: "20px",
+          background: "#fff",
+          borderRadius: "10px",
+          boxShadow: "inset 0 3px 8px rgba(0,0,0,0.15)"
         }}
       >
         {conversation.map((msg, idx) => (
-          <div key={idx} style={{ marginBottom: "10px", textAlign: msg.sender === "user" ? "right" : "left" }}>
-            <strong>{msg.sender === "user" ? "אתה:" : "היועץ:"}</strong> {msg.text}
-          </div>
+          <motion.div
+            key={idx}
+            initial="hidden"
+            animate="visible"
+            variants={chatFadeIn}
+            style={{
+              marginBottom: "14px",
+              display: "flex",
+              justifyContent: msg.sender === "user" ? "flex-end" : "flex-start"
+            }}
+          >
+            <div
+              style={{
+                maxWidth: "80%",
+                padding: "12px 18px",
+                borderRadius: "20px",
+                background: msg.sender === "user"
+                  ? "linear-gradient(135deg, #007bff, #0056b3)"
+                  : "#e0e0e0",
+                color: msg.sender === "user" ? "#fff" : "#333",
+                boxShadow: "0 3px 6px rgba(0,0,0,0.1)"
+              }}
+            >
+              <strong>{msg.sender === "user" ? "אתה:" : "היועץ:"}</strong> {msg.text}
+            </div>
+          </motion.div>
         ))}
         <div ref={chatEndRef} />
-        {loading && <p>טוען תשובה...</p>}
+        {loading && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{ textAlign: "center", color: "#666" }}
+          >
+            טוען תשובה...
+          </motion.p>
+        )}
       </div>
-      <div>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
         <input
           type="text"
           value={input}
@@ -103,25 +135,29 @@ const FinancialAdvisor = () => {
           onKeyDown={handleKeyDown}
           placeholder="הקלד את שאלתך..."
           style={{
-            width: "80%",
-            padding: "10px",
-            borderRadius: "5px",
-            border: "1px solid #ccc"
+            flexGrow: 1,
+            padding: "14px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+            marginRight: "12px",
+            fontSize: "1rem"
           }}
         />
-        <button
+        <motion.button
           onClick={handleSend}
+          whileHover={{ scale: 1.1 }}
           style={{
-            padding: "10px 20px",
-            marginLeft: "10px",
-            borderRadius: "5px",
+            padding: "14px 28px",
+            borderRadius: "6px",
             border: "none",
             background: "linear-gradient(135deg, #007bff, #0056b3)",
-            color: "#fff"
+            color: "#fff",
+            cursor: "pointer",
+            fontSize: "1rem"
           }}
         >
           שלח
-        </button>
+        </motion.button>
       </div>
     </motion.div>
   );
