@@ -3,8 +3,9 @@ import { getFundsByProduct } from "./services/backend";
 import "./App.css";
 import FinancialProduct from "./FinancialProduct";
 import InvestmentPrediction from "./InvestmentPrediction";
+import FinancialAdvisor from "./FinancialAdvisor"; // New component
 import { motion, useViewportScroll, useTransform } from "framer-motion";
-import { FaHome, FaChartLine, FaCoins } from "react-icons/fa";
+import { FaHome, FaChartLine, FaCoins, FaUserTie } from "react-icons/fa";
 
 // Fade-in up variant for smooth transitions & scroll reveal
 const fadeInUp = {
@@ -88,6 +89,16 @@ function App() {
         >
           <FaChartLine /> השוואה
         </motion.button>
+        <motion.button 
+          className="nav-button" 
+          onClick={() => setActiveTab("advisor")} 
+          whileHover={{ scale: 1.15 }}
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+        >
+          <FaUserTie /> יועץ כלכלי
+        </motion.button>
       </header>
       <main className="main-content">
         {activeTab === "home" && <Home />}
@@ -121,6 +132,7 @@ function App() {
           </>
         )}
         {activeTab === "comparison" && <Comparison />}
+        {activeTab === "advisor" && <FinancialAdvisor />}
       </main>
       <Footer />
     </div>
@@ -340,7 +352,7 @@ const Comparison = () => {
             width: "45%",
             borderRadius: "10px",
             objectFit: "cover",
-            objectPosition: "90%" // shifted further to the right as requested
+            objectPosition: "90%"
           }}
           variants={fadeInUp}
           initial="hidden"
