@@ -17,7 +17,7 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
-// This function returns a substring to filter the scraped funds
+// This function returns a substring to filter the scraped funds based on fund type
 const getFilterSubstring = (fundType) => {
   switch (fundType) {
     case "קרנות השתלמות":
@@ -49,32 +49,39 @@ const InvestmentPrediction = () => {
   const [result, setResult] = useState(null);
   const [chartData, setChartData] = useState([]);
 
-  // Fetch funds data from backend on mount
+  // Fetch funds data from backend when selectedFundType changes
   useEffect(() => {
-    const fetchFunds = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch("http://localhost:8000/funds/");
-        const data = await response.json();
-        setFunds(data);
-      } catch (err) {
-        setError("שגיאה בטעינת הנתונים");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchFunds();
-  }, []);
+    if (selectedFundType) {
+      const fetchFunds = async () => {
+        setLoading(true);
+        try {
+          const response = await fetch(
+            "http://localhost:8000/funds/?product_type=" + encodeURIComponent(selectedFundType)
+          );
+          const data = await response.json();
+          setFunds(data);
+        } catch (err) {
+          setError("שגיאה בטעינת הנתונים");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchFunds();
+    } else {
+      setFunds([]);
+    }
+  }, [selectedFundType]);
 
-  // Update filtered funds when selectedFundType or funds change
+  // Update filtered funds based on fetched data and ensure all rate fields are non-empty
   useEffect(() => {
     if (selectedFundType) {
       const filterStr = getFilterSubstring(selectedFundType);
-      let filtered = funds.filter((f) => f.name.includes(filterStr));
-      // If no funds match the filter, show all funds (so the dropdown is not empty)
-      if (filtered.length === 0) {
-        filtered = funds;
-      }
+      const filtered = funds.filter((f) =>
+        f.name.includes(filterStr) &&
+        f.last_year.trim() !== "" &&
+        f.last_3_years.trim() !== "" &&
+        f.last_5_years.trim() !== ""
+      );
       setFilteredFunds(filtered);
     } else {
       setFilteredFunds([]);
@@ -134,6 +141,7 @@ const InvestmentPrediction = () => {
         <select
           value={selectedFundType}
           onChange={(e) => setSelectedFundType(e.target.value)}
+          style={{ width: "300px" }}
         >
           <option value="">-- בחרו סוג קרן --</option>
           {[
@@ -157,6 +165,7 @@ const InvestmentPrediction = () => {
               const fund = filteredFunds.find((f) => f.id.toString() === fundId);
               setSelectedFund(fund);
             }}
+            style={{ width: "300px" }}
           >
             <option value="">-- בחרו תכנית --</option>
             {filteredFunds.map((f) => (
@@ -175,7 +184,11 @@ const InvestmentPrediction = () => {
       </div>
       <div style={{ marginBottom: "15px" }}>
         <label>בחרו תקופה: </label>
-        <select value={selectedPeriod} onChange={(e) => setSelectedPeriod(e.target.value)}>
+        <select
+          value={selectedPeriod}
+          onChange={(e) => setSelectedPeriod(e.target.value)}
+          style={{ width: "300px" }}
+        >
           <option value="">-- בחרו תקופה --</option>
           <option value="שנה">שנה</option>
           <option value="3 שנים">3 שנים</option>
