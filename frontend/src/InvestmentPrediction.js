@@ -72,16 +72,26 @@ const InvestmentPrediction = () => {
     }
   }, [selectedFundType]);
 
-  // Update filtered funds based on fetched data and ensure all rate fields are non-empty
+  // Update filtered funds based on fetched data and ensure all rate fields are non-empty.
+  // For "פוליסות חיסכון", do not filter by substring.
   useEffect(() => {
     if (selectedFundType) {
-      const filterStr = getFilterSubstring(selectedFundType);
-      const filtered = funds.filter((f) =>
-        f.name.includes(filterStr) &&
-        f.last_year.trim() !== "" &&
-        f.last_3_years.trim() !== "" &&
-        f.last_5_years.trim() !== ""
-      );
+      let filtered;
+      if (selectedFundType === "פוליסות חיסכון") {
+        filtered = funds.filter((f) =>
+          f.last_year.trim() !== "" &&
+          f.last_3_years.trim() !== "" &&
+          f.last_5_years.trim() !== ""
+        );
+      } else {
+        const filterStr = getFilterSubstring(selectedFundType);
+        filtered = funds.filter((f) =>
+          f.name.includes(filterStr) &&
+          f.last_year.trim() !== "" &&
+          f.last_3_years.trim() !== "" &&
+          f.last_5_years.trim() !== ""
+        );
+      }
       setFilteredFunds(filtered);
     } else {
       setFilteredFunds([]);
