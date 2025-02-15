@@ -7,8 +7,11 @@ WORKDIR /app
 # Copy requirements first to leverage Docker caching
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies + ensure protobuf is installed
+# Also upgrading pip to reduce conflicts if needed
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
 
 # Copy the entire backend folder, including the app folder
 COPY . .
