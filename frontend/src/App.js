@@ -3,7 +3,7 @@ import { getFundsByProduct } from "./services/backend";
 import "./App.css";
 import FinancialProduct from "./FinancialProduct";
 import InvestmentPrediction from "./InvestmentPrediction";
-import EconomicAdvisor from "./EconomicAdvisor"; // New import for advisor microservice
+import EconomicAdvisor from "./economicAdvisor"; // Ensure filename matches exactly (EconomicAdvisor.js)
 import { motion, useViewportScroll, useTransform } from "framer-motion";
 import { FaHome, FaChartLine, FaCoins, FaUserTie } from "react-icons/fa";
 
@@ -59,17 +59,6 @@ function App() {
   return (
     <div className="app-container">
       <header className="navbar">
-        {/* New button on the far left for Economic Advisor */}
-        <motion.button 
-          className="nav-button" 
-          onClick={() => setActiveTab("advisor")} 
-          whileHover={{ scale: 1.15 }}
-          variants={fadeInUp}
-          initial="hidden"
-          animate="visible"
-        >
-          <FaUserTie /> יועץ קרנות AI
-        </motion.button>
         <motion.button 
           className="nav-button" 
           onClick={() => setActiveTab("home")} 
@@ -99,6 +88,16 @@ function App() {
           animate="visible"
         >
           <FaChartLine /> השוואה
+        </motion.button>
+        <motion.button 
+          className="nav-button" 
+          onClick={() => setActiveTab("advisor")} 
+          whileHover={{ scale: 1.15 }}
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+        >
+          <FaUserTie /> יועץ קרנות AI
         </motion.button>
       </header>
       <main className="main-content">
@@ -133,14 +132,13 @@ function App() {
           </>
         )}
         {activeTab === "comparison" && <Comparison />}
-        {activeTab === "advisor" && <EconomicAdvisor />} {/* Render advisor tab */}
+        {activeTab === "advisor" && <EconomicAdvisor />} {/* Render Economic Advisor tab */}
       </main>
       <Footer />
     </div>
   );
 }
 
-// Home component remains unchanged
 const Home = () => {
   const { scrollY } = useViewportScroll();
   const yImage1 = useTransform(scrollY, [0, 300], [0, -50]);
@@ -320,7 +318,6 @@ const FundsList = ({ funds, error, loading }) => {
   }
 };
 
-// Comparison component remains unchanged
 const Comparison = () => {
   return (
     <motion.div
@@ -378,7 +375,6 @@ const Comparison = () => {
   );
 };
 
-// Footer component remains unchanged
 const Footer = () => {
   return (
     <footer className="footer">
