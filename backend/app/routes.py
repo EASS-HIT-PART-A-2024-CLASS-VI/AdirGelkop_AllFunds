@@ -6,19 +6,20 @@ from bs4 import BeautifulSoup
 import datetime
 import os
 import openai
-# Import transformer pipeline for the free RAG Agent solution
-from transformers import pipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 import torch
 
 router = APIRouter()
 
-# Initialize the transformer pipeline (using distilgpt2 as a demo model)
+# Initialize the transformer pipeline with a Hebrew GPT-2 model ("taich/gpt2-hebrew")
 try:
+    model = AutoModelForCausalLM.from_pretrained("taich/gpt2-hebrew")
+    tokenizer = AutoTokenizer.from_pretrained("taich/gpt2-hebrew")
     chatbot = pipeline(
         "text-generation",
-        model="distilgpt2",
-        tokenizer="distilgpt2",
-        device=0 if torch.cuda.is_available() else -1  # use GPU if available
+        model=model,
+        tokenizer=tokenizer,
+        device=0 if torch.cuda.is_available() else -1  # Use GPU if available
     )
 except Exception as init_error:
     print("Error initializing chatbot:", init_error)
@@ -111,7 +112,7 @@ def filter_funds(company: str = None, product_type: str = None):
         funds = [fund for fund in funds if product_type in fund['name']]
     return funds
 
-# New /chat endpoint for the RAG Agent (Economic Advisor) using a free transformer model
+# New /chat endpoint for the RAG Agent (Economic Advisor) using the free transformer model
 @router.post("/chat")
 async def chat_endpoint(request: Request):
     data = await request.json()
@@ -126,6 +127,9 @@ async def chat_endpoint(request: Request):
         f"משתמש: {user_message}\n"
         "יועץ:"
     )
+    
+    if not chatbot:
+        return {"response": "מצטער, לא ניתן לגשת ליועץ הכלכלי כעת. אנא נסה מאוחר יותר."}
     
     try:
         response = chatbot(prompt, max_length=150, do_sample=True, temperature=0.7)
