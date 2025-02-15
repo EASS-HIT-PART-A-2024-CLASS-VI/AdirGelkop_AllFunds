@@ -3,8 +3,9 @@ import { getFundsByProduct } from "./services/backend";
 import "./App.css";
 import FinancialProduct from "./FinancialProduct";
 import InvestmentPrediction from "./InvestmentPrediction";
+import EconomicAdvisor from "./EconomicAdvisor"; // New import for advisor microservice
 import { motion, useViewportScroll, useTransform } from "framer-motion";
-import { FaHome, FaChartLine, FaCoins } from "react-icons/fa";
+import { FaHome, FaChartLine, FaCoins, FaUserTie } from "react-icons/fa";
 
 // Fade-in up variant for smooth transitions & scroll reveal
 const fadeInUp = {
@@ -58,6 +59,17 @@ function App() {
   return (
     <div className="app-container">
       <header className="navbar">
+        {/* New button on the far left for Economic Advisor */}
+        <motion.button 
+          className="nav-button" 
+          onClick={() => setActiveTab("advisor")} 
+          whileHover={{ scale: 1.15 }}
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+        >
+          <FaUserTie /> יועץ קרנות AI
+        </motion.button>
         <motion.button 
           className="nav-button" 
           onClick={() => setActiveTab("home")} 
@@ -121,12 +133,14 @@ function App() {
           </>
         )}
         {activeTab === "comparison" && <Comparison />}
+        {activeTab === "advisor" && <EconomicAdvisor />} {/* Render advisor tab */}
       </main>
       <Footer />
     </div>
   );
 }
 
+// Home component remains unchanged
 const Home = () => {
   const { scrollY } = useViewportScroll();
   const yImage1 = useTransform(scrollY, [0, 300], [0, -50]);
@@ -218,6 +232,7 @@ const Home = () => {
   );
 };
 
+// FundsList component remains unchanged
 const FundsList = ({ funds, error, loading }) => {
   if (loading) return <p style={{ textAlign: "center" }}>טוען...</p>;
   if (error) return <p style={{ color: "red", textAlign: "center" }}>{error}</p>;
@@ -305,6 +320,7 @@ const FundsList = ({ funds, error, loading }) => {
   }
 };
 
+// Comparison component remains unchanged
 const Comparison = () => {
   return (
     <motion.div
@@ -340,7 +356,7 @@ const Comparison = () => {
             width: "45%",
             borderRadius: "10px",
             objectFit: "cover",
-            objectPosition: "90%" // shifted further to the right as requested
+            objectPosition: "90%"
           }}
           variants={fadeInUp}
           initial="hidden"
@@ -362,6 +378,7 @@ const Comparison = () => {
   );
 };
 
+// Footer component remains unchanged
 const Footer = () => {
   return (
     <footer className="footer">
