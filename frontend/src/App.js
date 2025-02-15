@@ -89,16 +89,6 @@ function App() {
         >
           <FaChartLine /> השוואה
         </motion.button>
-        <motion.button 
-          className="nav-button" 
-          onClick={() => setActiveTab("advisor")} 
-          whileHover={{ scale: 1.15 }}
-          variants={fadeInUp}
-          initial="hidden"
-          animate="visible"
-        >
-          <FaUserTie /> יועץ קרנות AI
-        </motion.button>
       </header>
       <main className="main-content">
         {activeTab === "home" && <Home />}
@@ -132,7 +122,6 @@ function App() {
           </>
         )}
         {activeTab === "comparison" && <Comparison />}
-        {activeTab === "advisor" && <EconomicAdvisor />} {/* Render Economic Advisor tab */}
       </main>
       <Footer />
     </div>

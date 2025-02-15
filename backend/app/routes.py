@@ -1,13 +1,71 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException, Request
 from pydantic import BaseModel
 from typing import List
 import requests
 from bs4 import BeautifulSoup
 import datetime
+import os
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 router = APIRouter()
 
-# Data model for fund details
+#############################
+# Attempt to load Mistral  #
+#############################
+try:
+    model_name = "yam-peleg/Hebrew-Mistral-7B"
+
+    # 1) Load config
+    config = AutoConfig.from_pretrained(
+        model_name,
+        trust_remote_code=True,
+        revision="main",
+    )
+
+    # 2) Load tokenizer with fast version
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_name,
+        trust_remote_code=True,
+        revision="main",
+        use_fast=True
+    )
+
+    # 3) Load model (GPU vs CPU)
+    if torch.cuda.is_available():
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            trust_remote_code=True,
+            revision="main",
+            device_map="auto",
+            torch_dtype=torch.float16
+        )
+    else:
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            trust_remote_code=True,
+            revision="main"
+        )
+
+    # 4) Build a pipeline for text generation
+    chatbot = pipeline(
+        task="text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        device=0 if torch.cuda.is_available() else -1,
+        max_new_tokens=200
+    )
+
+    print("Mistral model loaded successfully.")
+
+except Exception as init_error:
+    print("Error initializing chatbot:", init_error)
+    chatbot = None
+
+##########################################
+# Data model and scraping logic (unchanged)
+##########################################
+
 class Fund(BaseModel):
     id: int
     name: str
@@ -16,7 +74,6 @@ class Fund(BaseModel):
     last_3_years: str
     last_5_years: str
 
-# Helper function to get the month name two months ago
 def get_month_name_two_months_ago():
     hebrew_months = {
         "January": "ינואר",
@@ -37,15 +94,15 @@ def get_month_name_two_months_ago():
     month_name = two_months_ago.strftime("%B")
     return hebrew_months.get(month_name, month_name)
 
-# Scraping function: fetches and parses fund data
 def scrape_funds(url: str):
-    response = requests.get(url)
+    # Encode the URL to ensure proper handling of non-ASCII characters
+    from urllib.parse import quote
+    encoded_url = quote(url, safe=":/")
+    response = requests.get(encoded_url)
     if response.status_code != 200:
-        raise Exception(f"Failed to fetch data from {url}: {response.status_code}")
-
+        raise Exception(f"Failed to fetch data from {encoded_url}: {response.status_code}")
     soup = BeautifulSoup(response.content, "html.parser")
     month_name = get_month_name_two_months_ago()
-
     funds = []
     rows = soup.find_all("tr")  # Adjust selector as needed
     for i, row in enumerate(rows[1:], start=1):  # Skip table header
@@ -61,7 +118,7 @@ def scrape_funds(url: str):
             })
     return funds
 
-# Updated endpoint to support product_type parameter
+# Endpoint to fetch funds based on product_type parameter
 @router.get("/funds/", response_model=List[Fund])
 def get_funds(product_type: str = Query("קרנות השתלמות")):
     PRODUCT_URLS = {
@@ -95,3 +152,38 @@ def filter_funds(company: str = None, product_type: str = None):
     if product_type:
         funds = [fund for fund in funds if product_type in fund['name']]
     return funds
+
+###################################
+# The chat RAG Agent endpoint
+###################################
+@router.post("/chat")
+async def chat_endpoint(request: Request):
+    data = await request.json()
+    user_message = data.get("message", "")
+    if not user_message:
+        raise HTTPException(status_code=400, detail="No message provided")
+
+    if not chatbot:
+        return {
+            "response": (
+                "מצטער, לא ניתן לגשת ליועץ הכלכלי כעת. "
+                "אנא נסה מאוחר יותר (model did not init)."
+            )
+        }
+
+    prompt = (
+        "אתה יועץ כלכלי מומחה בתחום פתרונות קרנות. "
+        "ענה בצורה מקצועית ומפורטת על השאלה הבאה בעברית, והכלל בסיום דיסקליימר שהמידע הוא לצורך מידע בלבד ואינו מהווה המלצה פיננסית:\n\n"
+        f"משתמש: {user_message}\n"
+        "יועץ:"
+    )
+
+    try:
+        outputs = chatbot(prompt, max_length=200, do_sample=True, temperature=0.7)
+        generated_text = outputs[0]["generated_text"]
+        answer = generated_text.replace(prompt, "").strip()
+        if not answer:
+            answer = "סליחה, לא הצלחתי לקבל תשובה מהמערכת. אנא נסה שוב."
+        return {"response": answer}
+    except Exception as e:
+        return {"response": f"מצטער, אירעה שגיאה: {str(e)}. (תשובה דמה)"}
